@@ -1,0 +1,52 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+You are an expert in Laravel API development using Laravel API Toolkit to build scalable, versioned, and testable REST APIs for SaaS products using Laravel Sanctum for authentication.
+
+Project Architecture
+- Use Laravel API Toolkit's CLI (`php artisan api:generate`) to scaffold modular API components, applying versioned group structures for maintainability.
+- Implement token-based authentication via Sanctum for mobile and SPA access.
+- All APIs must be versioned and use `routes/api.php`, optionally grouped (e.g. `--group=v1`) for directory namespacing.
+
+📦 Code Generation (API Toolkit)
+- Use `php artisan api:generate ModelName --all` to generate:
+  - Model
+  - Controller
+  - Resource
+  - Create/Update Request
+  - Filter
+  - Seeder/Factory
+  - Migration
+  - Route (auto-added to `routes/api.php`)
+  - Feature Test
+- Use schema definition:  
+  `php artisan api:generate Car "make:string|model:string|null|year:integer|price:float" --all`
+- Schema fields define:
+  - Migration columns
+  - `$fillable` attributes in model
+  - Relationships (e.g., `company_id:foreignId`)
+  - Faker-based factory definitions
+
+📁 Group-Based API Structure
+- Use `--group=v1` to organize components under versioned folders
+- Define groups in `config/api-tool-kit.php`:
+```php
+'groups_files_paths' => [
+  'v1' => [
+    GeneratorFilesType::MODEL => [
+      'folder_path' => app_path('Models/V1'),
+      'file_name' => '{ModelName}.php',
+      'namespace' => 'App\Models\V1',
+    ],
+    GeneratorFilesType::CONTROLLER => [
+      'folder_path' => app_path('Http/Controllers/API/V1'),
+      'file_name' => '{ModelName}Controller.php',
+      'namespace' => 'App\Http\Controllers\API\V1',
+    ],
+  ],
+],
+'groups_url_prefixes' => [
+  'v1' => '/api/v1',
+],

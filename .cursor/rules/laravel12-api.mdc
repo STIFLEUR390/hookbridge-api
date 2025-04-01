@@ -1,0 +1,79 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+You are an expert in Laravel 12, PHP 8.2+, and building modern SaaS backends with Sanctum for API token authentication.
+
+Code Style and Architecture
+- Follow PSR-12 coding standards.
+- Use `declare(strict_types=1);` at the top of every PHP file.
+- Use object-oriented programming and Laravel's service container for dependency injection.
+- Use snake_case for regular variables and camelCase for method names.
+- Use class-based resource controllers; avoid closure-based routes.
+- Organize controllers in `App\Http\Controllers\Api`.
+
+Authentication
+- Use Laravel Sanctum for API token authentication.
+- Always protect API routes with `auth:sanctum` middleware.
+- Generate tokens using `$user->createToken()` and return plain text tokens in login responses.
+- Revoke tokens via `currentAccessToken()->delete()` on logout.
+
+API Routes
+- Define all routes in `routes/api.php`.
+- Group related endpoints with route prefixes (e.g. `Route::prefix('users')->group(...)`).
+- Use route names with dot notation (e.g., `users.index`, `auth.login`).
+- Use `apiResource` for CRUD endpoints and standard RESTful conventions.
+
+Controllers
+- Extend `App\Http\Controllers\Controller`.
+- Separate logic into Services when it grows beyond basic CRUD.
+- Inject dependencies via the constructor.
+- Return responses using Laravel’s `response()` helper or `JsonResource` for collections and items.
+- Validate requests using custom `FormRequest` classes.
+
+Models
+- Store models in `App\Models`.
+- Use guarded or fillable properties as needed (`protected $fillable = [...]`).
+- Always define relationships explicitly (e.g., `public function user(): BelongsTo`).
+- Use query scopes for reusable query logic.
+
+Migrations
+- Always include up and down methods.
+- Use appropriate column types (e.g., `unsignedBigInteger` for foreign keys).
+- Index foreign keys (`->index()` or `->foreign()`).
+- Use snake_case for column names.
+
+Form Requests
+- Store in `App\Http\Requests`.
+- Extend `FormRequest` and define `rules()` and `authorize()` methods.
+- Use specific request classes per controller method (e.g., `StoreUserRequest`, `UpdateUserRequest`).
+
+API Response Format
+- Return JSON:API-like responses with `data`, `message`, and `errors` fields.
+- Use appropriate HTTP status codes (`201` for creation, `204` for deletions, `422` for validation errors).
+- Use Laravel’s built-in `JsonResource` for transforming data responses.
+
+Security
+- Always validate inputs via Form Requests or inline validation.
+- Never return sensitive information like passwords or API tokens in responses.
+- Use `hash` helper for passwords (`Hash::make($request->password)`).
+- Use policy-based authorization when exposing user-specific resources.
+
+Testing
+- Generate tests with `php artisan make:test`.
+- Use Laravel’s HTTP testing tools (`$this->postJson(...)`) to test APIs.
+- Test both successful and failing cases (e.g., unauthorized access, validation errors).
+
+Environment
+- Load sensitive credentials from `.env`.
+- Use config files for fixed settings and defaults.
+- Ensure `.env.example` stays updated.
+
+Output Expectations
+- When generating code, always include full controllers, route definitions, models, and migrations.
+- Provide appropriate use statements and namespace declarations.
+- Include example request validation and JSON responses where relevant.
+- Ensure all generated code is complete, functional, and adheres to Laravel conventions.
+
+Follow Laravel’s official documentation and best practices.
