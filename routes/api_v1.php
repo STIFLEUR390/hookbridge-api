@@ -15,4 +15,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('/project-targets', \App\Http\Controllers\API\V1\ProjectTargetController::class);
     Route::patch('/project-targets/{target}/toggle-status', [\App\Http\Controllers\API\V1\ProjectTargetController::class, 'toggleStatus']);
+
+    Route::apiResource('/incoming-requests', \App\Http\Controllers\API\V1\IncomingRequestController::class);
+
 });

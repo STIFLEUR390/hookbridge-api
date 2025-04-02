@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Models\V1\Project;
 use App\Models\V1\ProjectTarget;
+use App\Models\V1\IncomingRequest;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -35,6 +36,28 @@ class DatabaseSeeder extends Seeder
                     'project_id' => $project->id,
                     'active' => true
                 ]);
+
+                // Création de requêtes entrantes pour chaque projet
+                // 5 nouvelles requêtes
+                IncomingRequest::factory(5)
+                    ->setNew()
+                    ->create([
+                        'project_id' => $project->id,
+                    ]);
+
+                // 3 requêtes traitées
+                IncomingRequest::factory(3)
+                    ->processed()
+                    ->create([
+                        'project_id' => $project->id,
+                    ]);
+
+                // 2 requêtes en erreur
+                IncomingRequest::factory(2)
+                    ->failed()
+                    ->create([
+                        'project_id' => $project->id,
+                    ]);
             });
     }
 }
