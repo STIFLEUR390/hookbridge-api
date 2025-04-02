@@ -16,6 +16,7 @@ class ProjectTargetFilters extends QueryFilters
     protected array $columnSearch = [
         'url',
     ];
+    
 
     protected array $allowedSorts = [
         'url',

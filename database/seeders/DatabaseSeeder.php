@@ -8,6 +8,7 @@ use App\Models\V1\ProjectTarget;
 use App\Models\V1\IncomingRequest;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Database\Seeders\V1\DeliveryAttemptSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -59,5 +60,8 @@ class DatabaseSeeder extends Seeder
                         'project_id' => $project->id,
                     ]);
             });
+
+        // Création des tentatives de livraison
+        $this->call(DeliveryAttemptSeeder::class);
     }
 }

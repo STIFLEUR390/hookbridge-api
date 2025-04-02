@@ -19,3 +19,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/incoming-requests', \App\Http\Controllers\API\V1\IncomingRequestController::class);
 
 });
+
+/*===========================
+=           deliveryAttempts           =
+=============================*/
+
+Route::apiResource('/deliveryAttempts', \App\Http\Controllers\API\V1\DeliveryAttemptController::class);
+
+/*=====  End of deliveryAttempts   ======*/
