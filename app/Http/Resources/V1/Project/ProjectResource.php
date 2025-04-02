@@ -2,11 +2,19 @@
 
 namespace App\Http\Resources\V1\Project;
 
+use App\Http\Resources\V1\User\UserResource;
+use App\Http\Resources\V1\ProjectTarget\ProjectTargetResource;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProjectResource extends JsonResource
 {
-    public function toArray($request): array
+    /**
+     * Transform the resource into an array.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(Request $request): array
     {
         return [
             'id' => $this->id,
@@ -17,11 +25,8 @@ class ProjectResource extends JsonResource
             'provider_config' => $this->provider_config,
             'uuid' => $this->uuid,
             'active' => $this->active,
-            'user' => [
-                'id' => $this->user->id,
-                'name' => $this->user->name,
-                'email' => $this->user->email,
-            ],
+            'user' => $this->whenLoaded('user', fn() => new UserResource($this->user)),
+            'targets' => $this->whenLoaded('targets', fn() => ProjectTargetResource::collection($this->targets)),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'status' => $this->active ? 'actif' : 'inactif',

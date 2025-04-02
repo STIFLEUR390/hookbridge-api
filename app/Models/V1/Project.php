@@ -3,10 +3,11 @@
 namespace App\Models\V1;
 
 use App\Filters\V1\ProjectFilters;
+use App\Models\V1\ProjectTarget;
 use Essa\APIToolKit\Filters\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Project extends Model
 {
@@ -43,4 +44,8 @@ class Project extends Model
 		return $this->belongsTo(\App\Models\User::class);
 	}
 
+    public function projectTargets(): HasMany
+    {
+        return $this->hasMany(ProjectTarget::class);
+    }
 }
