@@ -7,6 +7,7 @@ use App\Http\Requests\V1\IncomingRequest\CreateIncomingRequestRequest;
 use App\Http\Requests\V1\IncomingRequest\UpdateIncomingRequestRequest;
 use App\Http\Resources\V1\IncomingRequest\IncomingRequestResource;
 use App\Models\V1\IncomingRequest;
+use App\Services\V1\IncomingRequest\IncomingRequestService;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -22,6 +23,11 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 #[Group('Incoming Requests API', weight: 1)]
 class IncomingRequestController extends Controller
 {
+    public function __construct(
+        protected IncomingRequestService $service
+    ) {
+    }
+
     /**
      * Liste des requêtes entrantes
      *
@@ -54,9 +60,7 @@ class IncomingRequestController extends Controller
      */
     public function index(): AnonymousResourceCollection
     {
-        $incomingRequests = IncomingRequest::useFilters()
-            ->dynamicPaginate();
-
+        $incomingRequests = $this->service->getAll(request()->all());
         return IncomingRequestResource::collection($incomingRequests);
     }
 
@@ -89,7 +93,7 @@ class IncomingRequestController extends Controller
      */
     public function store(CreateIncomingRequestRequest $request): JsonResponse
     {
-        $incomingRequest = IncomingRequest::create($request->validated());
+        $incomingRequest = $this->service->create($request->validated());
 
         return response()->json([
             'message' => 'Incoming request created successfully',
@@ -119,6 +123,7 @@ class IncomingRequestController extends Controller
      */
     public function show(IncomingRequest $incomingRequest): IncomingRequestResource
     {
+        $incomingRequest = $this->service->findById($incomingRequest->id);
         return new IncomingRequestResource($incomingRequest);
     }
 
@@ -146,7 +151,7 @@ class IncomingRequestController extends Controller
      */
     public function update(UpdateIncomingRequestRequest $request, IncomingRequest $incomingRequest): JsonResponse
     {
-        $incomingRequest->update($request->validated());
+        $incomingRequest = $this->service->update($incomingRequest, $request->validated());
 
         return response()->json([
             'message' => 'Incoming request updated successfully',
@@ -167,7 +172,7 @@ class IncomingRequestController extends Controller
      */
     public function destroy(IncomingRequest $incomingRequest): JsonResponse
     {
-        $incomingRequest->delete();
+        $this->service->delete($incomingRequest);
 
         return response()->json([
             'message' => 'Incoming request deleted successfully',

@@ -7,6 +7,7 @@ use App\Http\Requests\V1\DeliveryAttempt\CreateDeliveryAttemptRequest;
 use App\Http\Requests\V1\DeliveryAttempt\UpdateDeliveryAttemptRequest;
 use App\Http\Resources\V1\DeliveryAttempt\DeliveryAttemptResource;
 use App\Models\V1\DeliveryAttempt;
+use App\Services\V1\DeliveryAttempt\DeliveryAttemptService;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -22,6 +23,11 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 #[Group('Delivery Attempts API')]
 class DeliveryAttemptController extends Controller
 {
+    public function __construct(
+        protected DeliveryAttemptService $service
+    ) {
+    }
+
     /**
      * Liste des tentatives de livraison
      *
@@ -54,10 +60,7 @@ class DeliveryAttemptController extends Controller
      */
     public function index(): AnonymousResourceCollection
     {
-        $deliveryAttempts = DeliveryAttempt::with(['incomingRequest', 'projectTarget'])
-            ->useFilters()
-            ->dynamicPaginate();
-
+        $deliveryAttempts = $this->service->getAll(request()->all());
         return DeliveryAttemptResource::collection($deliveryAttempts);
     }
 
@@ -89,8 +92,7 @@ class DeliveryAttemptController extends Controller
      */
     public function store(CreateDeliveryAttemptRequest $request): JsonResponse
     {
-        $deliveryAttempt = DeliveryAttempt::create($request->validated());
-        $deliveryAttempt->load(['incomingRequest', 'projectTarget']);
+        $deliveryAttempt = $this->service->create($request->validated());
 
         return response()->json([
             'message' => 'Delivery attempt created successfully',
@@ -121,7 +123,8 @@ class DeliveryAttemptController extends Controller
      */
     public function show(DeliveryAttempt $deliveryAttempt): DeliveryAttemptResource
     {
-        return new DeliveryAttemptResource($deliveryAttempt->load(['incomingRequest', 'projectTarget']));
+        $deliveryAttempt = $this->service->findById($deliveryAttempt->id);
+        return new DeliveryAttemptResource($deliveryAttempt);
     }
 
     /**
@@ -152,8 +155,7 @@ class DeliveryAttemptController extends Controller
      */
     public function update(UpdateDeliveryAttemptRequest $request, DeliveryAttempt $deliveryAttempt): JsonResponse
     {
-        $deliveryAttempt->update($request->validated());
-        $deliveryAttempt->load(['incomingRequest', 'projectTarget']);
+        $deliveryAttempt = $this->service->update($deliveryAttempt, $request->validated());
 
         return response()->json([
             'message' => 'Delivery attempt updated successfully',
@@ -174,7 +176,7 @@ class DeliveryAttemptController extends Controller
      */
     public function destroy(DeliveryAttempt $deliveryAttempt): JsonResponse
     {
-        $deliveryAttempt->delete();
+        $this->service->delete($deliveryAttempt);
 
         return response()->json([
             'message' => 'Delivery attempt deleted successfully',

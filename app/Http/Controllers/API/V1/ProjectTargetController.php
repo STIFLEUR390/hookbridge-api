@@ -7,32 +7,58 @@ use App\Http\Requests\V1\ProjectTarget\CreateProjectTargetRequest;
 use App\Http\Requests\V1\ProjectTarget\UpdateProjectTargetRequest;
 use App\Http\Resources\V1\ProjectTarget\ProjectTargetResource;
 use App\Models\V1\ProjectTarget;
+use App\Services\V1\ProjectTarget\ProjectTargetService;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
 
 /**
- * Gestion des cibles de projet HookBridge
+ * Gestion des cibles de projet (webhooks et callbacks)
  *
- * Ce contrôleur permet de gérer les cibles de webhook pour chaque projet.
+ * Cette API permet de gérer les cibles de projet, incluant les webhooks et les callbacks.
+ * Elle fournit des endpoints pour lister, créer, mettre à jour et supprimer les cibles.
+ *
+ * @tags Project Targets
  */
-#[Group('Cibles de Projet', weight: 2)]
+#[Group('Project Targets API', weight: 2)]
 class ProjectTargetController extends Controller
 {
     use AuthorizesRequests, ValidatesRequests;
 
+    public function __construct(
+        protected ProjectTargetService $service
+    ) {
+    }
+
     /**
-     * Liste toutes les cibles d'un projet
+     * Liste des cibles de projet
      *
-     * @param int $per_page Nombre d'éléments par page
-     * @param string $search Recherche par URL
-     * @param bool $active Filtrer par statut actif/inactif
-     * @param int $project_id Filtrer par projet
+     * Retourne une liste paginée des cibles de projet avec possibilité de filtrage et de tri.
      *
-     * @return AnonymousResourceCollection
+     * @queryParam project_id integer ID du projet associé. Example: 1
+     * @queryParam type string Type de cible (webhook/callback). Example: webhook
+     * @queryParam url string URL de la cible. Example: https://example.com/webhook
+     * @queryParam is_active boolean État actif/inactif de la cible. Example: true
+     * @queryParam sort string Champ de tri (-created_at pour ordre décroissant). Example: -created_at
+     * @queryParam include string Relations à inclure (project). Example: project
+     *
+     * @response {
+     *   "data": [
+     *     {
+     *       "id": 1,
+     *       "project_id": 1,
+     *       "type": "webhook",
+     *       "url": "https://example.com/webhook",
+     *       "is_active": true,
+     *       "created_at": "2024-03-14T12:00:00+00:00"
+     *     }
+     *   ],
+     *   "links": {},
+     *   "meta": {}
+     * }
      */
     #[QueryParameter('per_page', description: 'Nombre de cibles par page', type: 'int', default: 15)]
     #[QueryParameter('search', description: 'Recherche par URL', type: 'string')]
@@ -40,76 +66,116 @@ class ProjectTargetController extends Controller
     #[QueryParameter('project_id', description: 'ID du projet', type: 'int')]
     public function index(): AnonymousResourceCollection
     {
-        $targets = ProjectTarget::useFilters()
-            ->dynamicPaginate();
-
-        return ProjectTargetResource::collection($targets);
+        $projectTargets = $this->service->getAll(request()->all());
+        return ProjectTargetResource::collection($projectTargets);
     }
 
     /**
-     * Crée une nouvelle cible de projet
+     * Créer une nouvelle cible de projet
      *
-     * @param CreateProjectTargetRequest $request
-     * @return JsonResponse
+     * Enregistre une nouvelle cible de projet dans le système.
+     *
+     * @bodyParam project_id integer required ID du projet associé. Example: 1
+     * @bodyParam type string required Type de cible (webhook/callback). Example: webhook
+     * @bodyParam url string required URL de la cible. Example: https://example.com/webhook
+     * @bodyParam is_active boolean État actif/inactif de la cible. Example: true
+     *
+     * @response 201 {
+     *   "message": "Project target created successfully",
+     *   "data": {
+     *     "id": 1,
+     *     "project_id": 1,
+     *     "type": "webhook",
+     *     "url": "https://example.com/webhook",
+     *     "is_active": true,
+     *     "created_at": "2024-03-14T12:00:00+00:00"
+     *   }
+     * }
      */
     public function store(CreateProjectTargetRequest $request): JsonResponse
     {
-        $target = ProjectTarget::create($request->validated());
+        $projectTarget = $this->service->create($request->validated());
 
-        return $this->responseCreated(
-            'Cible de projet créée avec succès',
-            new ProjectTargetResource($target)
-        );
+        return response()->json([
+            'message' => 'Project target created successfully',
+            'data' => new ProjectTargetResource($projectTarget),
+        ], 201);
     }
 
     /**
-     * Affiche les détails d'une cible spécifique
+     * Afficher une cible de projet
      *
-     * @param ProjectTarget $target La cible à afficher
-     * @return JsonResponse
+     * Retourne les détails d'une cible de projet spécifique.
+     *
+     * @urlParam projectTarget integer required L'ID de la cible de projet. Example: 1
+     *
+     * @response {
+     *   "data": {
+     *     "id": 1,
+     *     "project_id": 1,
+     *     "type": "webhook",
+     *     "url": "https://example.com/webhook",
+     *     "is_active": true,
+     *     "created_at": "2024-03-14T12:00:00+00:00"
+     *   }
+     * }
      */
-    public function show(ProjectTarget $target): JsonResponse
+    public function show(ProjectTarget $projectTarget): ProjectTargetResource
     {
-        $this->authorize('view', $target);
-
-        return $this->responseSuccess(
-            'Détails de la cible récupérés avec succès',
-            new ProjectTargetResource($target)
-        );
+        $projectTarget = $this->service->findById($projectTarget->id);
+        return new ProjectTargetResource($projectTarget);
     }
 
     /**
-     * Met à jour une cible existante
+     * Mettre à jour une cible de projet
      *
-     * @param UpdateProjectTargetRequest $request
-     * @param ProjectTarget $target La cible à mettre à jour
-     * @return JsonResponse
+     * Met à jour les informations d'une cible de projet existante.
+     *
+     * @urlParam projectTarget integer required L'ID de la cible de projet. Example: 1
+     * @bodyParam type string Type de cible (webhook/callback). Example: webhook
+     * @bodyParam url string URL de la cible. Example: https://example.com/webhook
+     * @bodyParam is_active boolean État actif/inactif de la cible. Example: true
+     *
+     * @response {
+     *   "message": "Project target updated successfully",
+     *   "data": {
+     *     "id": 1,
+     *     "project_id": 1,
+     *     "type": "webhook",
+     *     "url": "https://example.com/webhook",
+     *     "is_active": true,
+     *     "created_at": "2024-03-14T12:00:00+00:00"
+     *   }
+     * }
      */
-    public function update(UpdateProjectTargetRequest $request, ProjectTarget $target): JsonResponse
+    public function update(UpdateProjectTargetRequest $request, ProjectTarget $projectTarget): JsonResponse
     {
-        $this->authorize('update', $target);
+        $projectTarget = $this->service->update($projectTarget, $request->validated());
 
-        $target->update($request->validated());
-
-        return $this->responseSuccess(
-            'Cible mise à jour avec succès',
-            new ProjectTargetResource($target)
-        );
+        return response()->json([
+            'message' => 'Project target updated successfully',
+            'data' => new ProjectTargetResource($projectTarget),
+        ]);
     }
 
     /**
-     * Supprime une cible
+     * Supprimer une cible de projet
      *
-     * @param ProjectTarget $target La cible à supprimer
-     * @return JsonResponse
+     * Supprime définitivement une cible de projet du système.
+     *
+     * @urlParam projectTarget integer required L'ID de la cible de projet. Example: 1
+     *
+     * @response {
+     *   "message": "Project target deleted successfully"
+     * }
      */
-    public function destroy(ProjectTarget $target): JsonResponse
+    public function destroy(ProjectTarget $projectTarget): JsonResponse
     {
-        $this->authorize('delete', $target);
+        $this->service->delete($projectTarget);
 
-        $target->delete();
-
-        return $this->responseDeleted();
+        return response()->json([
+            'message' => 'Project target deleted successfully',
+        ]);
     }
 
     /**
