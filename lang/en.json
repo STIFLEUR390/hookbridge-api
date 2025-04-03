@@ -265,5 +265,14 @@
     "passwords.reset": "Your password has been reset!",
     "passwords.throttled": "Please wait before retrying.",
     "passwords.token": "This password reset token is invalid.",
-    "passwords.user": "We can't find a user with that email address."
+    "passwords.user": "We can't find a user with that email address.",
+    "auth.name_required": "The name is required",
+    "auth.name_max": "The name must not exceed 255 characters",
+    "auth.email_required": "The email address is required",
+    "auth.email_invalid": "The email address is invalid",
+    "auth.email_taken": "This email address is already taken",
+    "auth.password_required": "The password is required",
+    "auth.password_min": "The password must be at least 8 characters",
+    "auth.password_confirmed": "The password confirmation does not match",
+    "auth.register_success": "Account created successfully"
 }

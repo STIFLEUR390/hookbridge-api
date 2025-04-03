@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
 use Illuminate\Validation\ValidationException;
 use Laravel\Sanctum\PersonalAccessToken;
 
@@ -85,5 +86,26 @@ class AuthController extends Controller
         $request->user()->tokens()->delete();
 
         return $this->responseSuccess(__('auth.logout_all_success'));
+    }
+
+    /**
+     * Crée un nouveau compte utilisateur.
+     */
+    public function register(RegisterRequest $request)
+    {
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        // Création du token d'accès
+        $token = $user->createToken($user->email)->plainTextToken;
+
+        return $this->responseSuccess(__('auth.register_success'), [
+            'token' => $token,
+            'user' => $user,
+            'token_type' => 'Bearer',
+        ]);
     }
 }

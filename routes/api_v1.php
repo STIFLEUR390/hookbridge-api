@@ -10,6 +10,7 @@ use App\Http\Controllers\API\V1\PasswordResetController;
 
 // Routes d'authentification
 Route::prefix('auth')->group(function () {
+    Route::post('register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/refresh', [AuthController::class, 'refreshToken']);
     Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
