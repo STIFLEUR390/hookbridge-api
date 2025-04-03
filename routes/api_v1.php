@@ -5,18 +5,31 @@ declare(strict_types=1);
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\V1\ProfileController;
+use App\Http\Controllers\API\V1\PasswordResetController;
 
 // Routes d'authentification
 Route::prefix('auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/refresh', [AuthController::class, 'refreshToken']);
     Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+
+    // Routes de réinitialisation de mot de passe
+    Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink']);
+    Route::post('/reset-password', [PasswordResetController::class, 'reset']);
 });
 
 // Routes protégées
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
+    });
+
+    // Routes du profil utilisateur
+    Route::prefix('profile')->group(function () {
+        Route::get('/', [ProfileController::class, 'show']);
+        Route::put('/', [ProfileController::class, 'updateProfile']);
+        Route::put('/password', [ProfileController::class, 'updatePassword']);
     });
 
     Route::apiResource('/projects', \App\Http\Controllers\API\V1\ProjectController::class);

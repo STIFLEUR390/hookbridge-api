@@ -256,5 +256,14 @@
     "Web Server is Down": "Le serveur Web est en panne",
     "Whoops!": "Oups !",
     "Yes": "Oui",
-    "You are receiving this email because we received a password reset request for your account.": "Vous recevez cet e-mail car nous avons reçu une demande de réinitialisation de mot de passe pour votre compte."
+    "You are receiving this email because we received a password reset request for your account.": "Vous recevez cet e-mail car nous avons reçu une demande de réinitialisation de mot de passe pour votre compte.",
+    "profile.updated_successfully": "Profil mis à jour avec succès",
+    "profile.password_updated_successfully": "Mot de passe mis à jour avec succès",
+    "profile.retrieved_successfully": "Profil récupéré avec succès",
+    "auth.please_login_again": "Veuillez vous reconnecter avec votre nouveau mot de passe",
+    "passwords.sent": "Nous avons envoyé par email le lien de réinitialisation de mot de passe !",
+    "passwords.reset": "Votre mot de passe a été réinitialisé !",
+    "passwords.throttled": "Veuillez patienter avant de réessayer.",
+    "passwords.token": "Ce jeton de réinitialisation de mot de passe n'est pas valide.",
+    "passwords.user": "Nous ne pouvons pas trouver un utilisateur avec cette adresse email."
 }
