@@ -107,11 +107,11 @@ class ProjectController extends Controller
     {
         $project = $this->service->create($request->validated());
 
-        return $this->responseSuccess(
-            __('projects.created'),
-            new ProjectResource($project),
-            201
-        );
+        return response()->json([
+            'status' => 201,
+            'message' => __('projects.created'),
+            'data' => new ProjectResource($project)
+        ], 201);
     }
 
     /**
@@ -162,10 +162,11 @@ class ProjectController extends Controller
     {
         $project = $this->service->update($project, $request->validated());
 
-        return $this->responseSuccess(
-            __('projects.updated'),
-            new ProjectResource($project)
-        );
+        return response()->json([
+            'status' => 200,
+            'message' => __('projects.updated'),
+            'data' => new ProjectResource($project)
+        ]);
     }
 
     /**
@@ -183,7 +184,10 @@ class ProjectController extends Controller
     {
         $this->service->delete($project);
 
-        return $this->responseSuccess(__('projects.deleted'));
+        return response()->json([
+            'status' => 204,
+            'message' => __('projects.deleted')
+        ], 204);
     }
 
     /**
@@ -198,9 +202,10 @@ class ProjectController extends Controller
 
         $project->update(['active' => !$project->active]);
 
-        return $this->responseSuccess(
-            $project->active ? __('projects.status_activated') : __('projects.status_deactivated'),
-            new ProjectResource($project)
-        );
+        return response()->json([
+            'status' => 200,
+            'message' => $project->active ? __('projects.status_activated') : __('projects.status_deactivated'),
+            'data' => new ProjectResource($project)
+        ]);
     }
 }

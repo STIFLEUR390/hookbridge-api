@@ -11,18 +11,23 @@ use App\Services\V1\IncomingRequest\IncomingRequestService;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Dedoc\Scramble\Attributes\QueryParameter;
 
 /**
- * Gestion des requêtes entrantes (webhooks et callbacks)
+ * Gestion des requêtes entrantes
  *
- * Cette API permet de gérer les requêtes entrantes, incluant les webhooks et les callbacks.
- * Elle fournit des endpoints pour lister, créer, mettre à jour et supprimer les requêtes.
+ * Cette API permet de gérer les requêtes entrantes (callbacks et webhooks).
+ * Elle fournit des endpoints pour lister, afficher et supprimer les requêtes.
  *
  * @tags Incoming Requests
  */
-#[Group('Incoming Requests API', weight: 1)]
+#[Group('Incoming Requests API', weight: 3)]
 class IncomingRequestController extends Controller
 {
+    use AuthorizesRequests, ValidatesRequests;
+
     public function __construct(
         protected IncomingRequestService $service
     ) {
@@ -34,37 +39,35 @@ class IncomingRequestController extends Controller
      * Retourne une liste paginée des requêtes entrantes avec possibilité de filtrage et de tri.
      *
      * @queryParam project_id integer ID du projet associé. Example: 1
-     * @queryParam type string Type de requête. Example: webhook
-     * @queryParam http_method string Méthode HTTP. Example: POST
-     * @queryParam headers object Entêtes HTTP de la requête. Example: {"Content-Type": "application/json"}
-     * @queryParam payload object Contenu de la requête. Example: {"event": "user.created"}
-     * @queryParam status string Statut de la requête. Example: pending
-     * @queryParam received_at datetime Date de réception. Example: 2024-03-14T12:00:00+00:00
+     * @queryParam method string Méthode HTTP. Example: POST
+     * @queryParam path string Chemin de la requête. Example: /webhook
+     * @queryParam status integer Code de statut HTTP. Example: 200
      * @queryParam from_date string Date de début (Y-m-d). Example: 2024-01-01
      * @queryParam to_date string Date de fin (Y-m-d). Example: 2024-12-31
      * @queryParam sort string Champ de tri (-created_at pour ordre décroissant). Example: -created_at
      * @queryParam include string Relations à inclure (project,deliveryAttempts). Example: project
-     * @queryParam search string Recherche dans type, http_method, status et payload. Example: webhook
+     * @queryParam search string Recherche dans path et headers. Example: webhook
      *
      * @response {
      *   "data": [
      *     {
      *       "id": 1,
      *       "project_id": 1,
-     *       "type": "webhook",
-     *       "http_method": "POST",
+     *       "method": "POST",
+     *       "path": "/webhook",
      *       "headers": {"Content-Type": "application/json"},
-     *       "payload": {"event": "user.created"},
-     *       "status": "pending",
-     *       "received_at": "2024-03-14T12:00:00+00:00",
-     *       "created_at": "2024-03-14T12:00:00+00:00",
-     *       "updated_at": "2024-03-14T12:00:00+00:00"
+     *       "body": {"event": "payment.success"},
+     *       "status": 200,
+     *       "created_at": "2024-03-14T12:00:00+00:00"
      *     }
      *   ],
      *   "links": {},
      *   "meta": {}
      * }
      */
+    #[QueryParameter('per_page', description: 'Nombre de requêtes par page', type: 'int', default: 15)]
+    #[QueryParameter('search', description: 'Recherche par chemin', type: 'string')]
+    #[QueryParameter('project_id', description: 'ID du projet', type: 'int')]
     public function index(): AnonymousResourceCollection
     {
         $incomingRequests = $this->service->getAll(request()->all());
@@ -119,12 +122,12 @@ class IncomingRequestController extends Controller
      *   "data": {
      *     "id": 1,
      *     "project_id": 1,
-     *     "type": "webhook",
-     *     "http_method": "POST",
+     *     "method": "POST",
+     *     "path": "/webhook",
      *     "headers": {"Content-Type": "application/json"},
-     *     "payload": {"event": "user.created"},
-     *     "status": "new",
-     *     "received_at": "2024-03-14T12:00:00+00:00"
+     *     "body": {"event": "payment.success"},
+     *     "status": 200,
+     *     "created_at": "2024-03-14T12:00:00+00:00"
      *   }
      * }
      */
@@ -182,7 +185,8 @@ class IncomingRequestController extends Controller
         $this->service->delete($incomingRequest);
 
         return response()->json([
-            'message' => __('incoming_requests.deleted'),
-        ]);
+            'status' => 204,
+            'message' => __('incoming_requests.deleted')
+        ], 204);
     }
 }

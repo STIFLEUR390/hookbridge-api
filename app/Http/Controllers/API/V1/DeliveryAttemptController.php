@@ -11,18 +11,23 @@ use App\Services\V1\DeliveryAttempt\DeliveryAttemptService;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Dedoc\Scramble\Attributes\QueryParameter;
 
 /**
  * Gestion des tentatives de livraison
  *
- * Cette API permet de gérer les tentatives de livraison des webhooks et callbacks
- * vers les URLs cibles configurées dans les projets.
+ * Cette API permet de gérer les tentatives de livraison des webhooks.
+ * Elle fournit des endpoints pour lister, afficher et supprimer les tentatives.
  *
  * @tags Delivery Attempts
  */
-#[Group('Delivery Attempts API')]
+#[Group('Delivery Attempts API', weight: 4)]
 class DeliveryAttemptController extends Controller
 {
+    use AuthorizesRequests, ValidatesRequests;
+
     public function __construct(
         protected DeliveryAttemptService $service
     ) {
@@ -31,21 +36,17 @@ class DeliveryAttemptController extends Controller
     /**
      * Liste des tentatives de livraison
      *
-     * Retourne une liste paginée des tentatives de livraison avec possibilité de filtrage.
+     * Retourne une liste paginée des tentatives de livraison avec possibilité de filtrage et de tri.
      *
      * @queryParam incoming_request_id integer ID de la requête entrante. Example: 1
      * @queryParam project_target_id integer ID de la cible du projet. Example: 1
-     * @queryParam attempt_count integer Nombre de tentatives. Example: 3
-     * @queryParam status string Statut de la tentative. Example: pending
+     * @queryParam status string Statut de la tentative. Example: success
      * @queryParam response_code integer Code de réponse HTTP. Example: 200
-     * @queryParam response_body string Corps de la réponse. Example: {"status": "success"}
-     * @queryParam next_attempt_at datetime Date de la prochaine tentative. Example: 2024-03-14T12:00:00+00:00
-     * @queryParam last_attempt_at datetime Date de la dernière tentative. Example: 2024-03-14T12:00:00+00:00
      * @queryParam from_date string Date de début (Y-m-d). Example: 2024-01-01
      * @queryParam to_date string Date de fin (Y-m-d). Example: 2024-12-31
      * @queryParam sort string Champ de tri (-created_at pour ordre décroissant). Example: -created_at
      * @queryParam include string Relations à inclure (incomingRequest,projectTarget). Example: incomingRequest
-     * @queryParam search string Recherche dans status, response_body et response_code. Example: success
+     * @queryParam search string Recherche dans status et response_body. Example: success
      *
      * @response {
      *   "data": [
@@ -53,20 +54,19 @@ class DeliveryAttemptController extends Controller
      *       "id": 1,
      *       "incoming_request_id": 1,
      *       "project_target_id": 1,
-     *       "attempt_count": 2,
      *       "status": "success",
      *       "response_code": 200,
-     *       "response_body": {"status": "success", "message": "Webhook received"},
-     *       "next_attempt_at": null,
-     *       "last_attempt_at": "2024-03-14T12:00:00+00:00",
-     *       "created_at": "2024-03-14T12:00:00+00:00",
-     *       "updated_at": "2024-03-14T12:00:00+00:00"
+     *       "response_body": "OK",
+     *       "created_at": "2024-03-14T12:00:00+00:00"
      *     }
      *   ],
      *   "links": {},
      *   "meta": {}
      * }
      */
+    #[QueryParameter('per_page', description: 'Nombre de tentatives par page', type: 'int', default: 15)]
+    #[QueryParameter('search', description: 'Recherche par statut', type: 'string')]
+    #[QueryParameter('incoming_request_id', description: 'ID de la requête entrante', type: 'int')]
     public function index(): AnonymousResourceCollection
     {
         $deliveryAttempts = $this->service->getAll(request()->all());
@@ -121,12 +121,10 @@ class DeliveryAttemptController extends Controller
      *     "id": 1,
      *     "incoming_request_id": 1,
      *     "project_target_id": 1,
-     *     "attempt_count": 2,
      *     "status": "success",
      *     "response_code": 200,
-     *     "response_body": {"status": "success", "message": "Webhook received"},
-     *     "next_attempt_at": null,
-     *     "last_attempt_at": "2024-03-14T12:00:00+00:00"
+     *     "response_body": "OK",
+     *     "created_at": "2024-03-14T12:00:00+00:00"
      *   }
      * }
      */
@@ -188,7 +186,8 @@ class DeliveryAttemptController extends Controller
         $this->service->delete($deliveryAttempt);
 
         return response()->json([
-            'message' => __('delivery_attempts.deleted'),
-        ]);
+            'status' => 204,
+            'message' => __('delivery_attempts.deleted')
+        ], 204);
     }
 }

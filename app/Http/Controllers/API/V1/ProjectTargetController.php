@@ -102,11 +102,11 @@ class ProjectTargetController extends Controller
     {
         $projectTarget = $this->service->create($request->validated());
 
-        return $this->responseSuccess(
-            __('project_targets.created'),
-            new ProjectTargetResource($projectTarget),
-            201
-        );
+        return response()->json([
+            'status' => 201,
+            'message' => __('project_targets.created'),
+            'data' => new ProjectTargetResource($projectTarget)
+        ], 201);
     }
 
     /**
@@ -159,10 +159,11 @@ class ProjectTargetController extends Controller
     {
         $projectTarget = $this->service->update($projectTarget, $request->validated());
 
-        return $this->responseSuccess(
-            __('project_targets.updated'),
-            new ProjectTargetResource($projectTarget)
-        );
+        return response()->json([
+            'status' => 200,
+            'message' => __('project_targets.updated'),
+            'data' => new ProjectTargetResource($projectTarget)
+        ]);
     }
 
     /**
@@ -180,7 +181,10 @@ class ProjectTargetController extends Controller
     {
         $this->service->delete($projectTarget);
 
-        return $this->responseSuccess(__('project_targets.deleted'));
+        return response()->json([
+            'status' => 204,
+            'message' => __('project_targets.deleted')
+        ], 204);
     }
 
     /**
@@ -195,9 +199,10 @@ class ProjectTargetController extends Controller
 
         $target->update(['active' => !$target->active]);
 
-        return $this->responseSuccess(
-            $target->active ? __('project_targets.status_activated') : __('project_targets.status_deactivated'),
-            new ProjectTargetResource($target)
-        );
+        return response()->json([
+            'status' => 200,
+            'message' => $target->active ? __('project_targets.status_activated') : __('project_targets.status_deactivated'),
+            'data' => new ProjectTargetResource($target)
+        ]);
     }
 }

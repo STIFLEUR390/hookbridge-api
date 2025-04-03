@@ -16,6 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append([
             \App\Http\Middleware\SetLocale::class,
         ]);
+        $middleware->alias([
+            'validate.project.uuid' => \App\Http\Middleware\ValidateProjectUuid::class
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
