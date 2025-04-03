@@ -7,11 +7,13 @@ use App\Models\V1\ProjectTarget;
 use Essa\APIToolKit\Filters\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
 
 class Project extends Model
 {
-    use HasFactory, Filterable;
+    use HasFactory, Filterable, CascadesDeletes;
 
     protected string $default_filters = ProjectFilters::class;
 
@@ -31,6 +33,16 @@ class Project extends Model
 		'user_id',
     ];
 
+    /**
+     * Les relations qui doivent être supprimées en cascade.
+     *
+     * @var array<string>
+     */
+    protected $cascadeDeletes = [
+        'projectTargets',
+        'incomingRequests',
+    ];
+
     protected function casts(): array
     {
         return [
@@ -39,13 +51,24 @@ class Project extends Model
         ];
     }
 
-	public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+	public function user(): BelongsTo
 	{
 		return $this->belongsTo(\App\Models\User::class);
 	}
 
+    /**
+     * Obtenir les cibles du projet.
+     */
     public function projectTargets(): HasMany
     {
         return $this->hasMany(ProjectTarget::class);
+    }
+
+    /**
+     * Obtenir les requêtes entrantes du projet.
+     */
+    public function incomingRequests(): HasMany
+    {
+        return $this->hasMany(IncomingRequest::class);
     }
 }

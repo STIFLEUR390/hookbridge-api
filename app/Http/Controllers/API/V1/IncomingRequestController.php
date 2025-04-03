@@ -34,12 +34,17 @@ class IncomingRequestController extends Controller
      * Retourne une liste paginée des requêtes entrantes avec possibilité de filtrage et de tri.
      *
      * @queryParam project_id integer ID du projet associé. Example: 1
-     * @queryParam type string Type de requête (webhook/callback). Example: webhook
-     * @queryParam http_method string Méthode HTTP (GET/POST). Example: POST
-     * @queryParam status string Statut de la requête (new/processing/processed/failed). Example: new
-     * @queryParam received_at string Date de réception (format Y-m-d). Example: 2024-03-14
+     * @queryParam type string Type de requête. Example: webhook
+     * @queryParam http_method string Méthode HTTP. Example: POST
+     * @queryParam headers object Entêtes HTTP de la requête. Example: {"Content-Type": "application/json"}
+     * @queryParam payload object Contenu de la requête. Example: {"event": "user.created"}
+     * @queryParam status string Statut de la requête. Example: pending
+     * @queryParam received_at datetime Date de réception. Example: 2024-03-14T12:00:00+00:00
+     * @queryParam from_date string Date de début (Y-m-d). Example: 2024-01-01
+     * @queryParam to_date string Date de fin (Y-m-d). Example: 2024-12-31
      * @queryParam sort string Champ de tri (-created_at pour ordre décroissant). Example: -created_at
-     * @queryParam include string Relations à inclure (project). Example: project
+     * @queryParam include string Relations à inclure (project,deliveryAttempts). Example: project
+     * @queryParam search string Recherche dans type, http_method, status et payload. Example: webhook
      *
      * @response {
      *   "data": [
@@ -50,8 +55,10 @@ class IncomingRequestController extends Controller
      *       "http_method": "POST",
      *       "headers": {"Content-Type": "application/json"},
      *       "payload": {"event": "user.created"},
-     *       "status": "new",
-     *       "received_at": "2024-03-14T12:00:00+00:00"
+     *       "status": "pending",
+     *       "received_at": "2024-03-14T12:00:00+00:00",
+     *       "created_at": "2024-03-14T12:00:00+00:00",
+     *       "updated_at": "2024-03-14T12:00:00+00:00"
      *     }
      *   ],
      *   "links": {},
@@ -96,7 +103,7 @@ class IncomingRequestController extends Controller
         $incomingRequest = $this->service->create($request->validated());
 
         return response()->json([
-            'message' => 'Incoming request created successfully',
+            'message' => __('incoming_requests.created'),
             'data' => new IncomingRequestResource($incomingRequest),
         ], 201);
     }
@@ -154,7 +161,7 @@ class IncomingRequestController extends Controller
         $incomingRequest = $this->service->update($incomingRequest, $request->validated());
 
         return response()->json([
-            'message' => 'Incoming request updated successfully',
+            'message' => __('incoming_requests.updated'),
             'data' => new IncomingRequestResource($incomingRequest),
         ]);
     }
@@ -175,7 +182,7 @@ class IncomingRequestController extends Controller
         $this->service->delete($incomingRequest);
 
         return response()->json([
-            'message' => 'Incoming request deleted successfully',
+            'message' => __('incoming_requests.deleted'),
         ]);
     }
 }

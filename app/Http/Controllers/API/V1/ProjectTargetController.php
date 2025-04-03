@@ -39,21 +39,27 @@ class ProjectTargetController extends Controller
      * Retourne une liste paginée des cibles de projet avec possibilité de filtrage et de tri.
      *
      * @queryParam project_id integer ID du projet associé. Example: 1
-     * @queryParam type string Type de cible (webhook/callback). Example: webhook
      * @queryParam url string URL de la cible. Example: https://example.com/webhook
-     * @queryParam is_active boolean État actif/inactif de la cible. Example: true
+     * @queryParam requires_authentication boolean Authentification requise. Example: true
+     * @queryParam secret string Clé secrète pour l'authentification. Example: abc123xyz
+     * @queryParam active boolean État actif/inactif de la cible. Example: true
+     * @queryParam from_date string Date de début (Y-m-d). Example: 2024-01-01
+     * @queryParam to_date string Date de fin (Y-m-d). Example: 2024-12-31
      * @queryParam sort string Champ de tri (-created_at pour ordre décroissant). Example: -created_at
-     * @queryParam include string Relations à inclure (project). Example: project
+     * @queryParam include string Relations à inclure (project,deliveryAttempts). Example: project
+     * @queryParam search string Recherche dans url et secret. Example: webhook
      *
      * @response {
      *   "data": [
      *     {
      *       "id": 1,
      *       "project_id": 1,
-     *       "type": "webhook",
      *       "url": "https://example.com/webhook",
-     *       "is_active": true,
-     *       "created_at": "2024-03-14T12:00:00+00:00"
+     *       "requires_authentication": true,
+     *       "secret": "abc123xyz",
+     *       "active": true,
+     *       "created_at": "2024-03-14T12:00:00+00:00",
+     *       "updated_at": "2024-03-14T12:00:00+00:00"
      *     }
      *   ],
      *   "links": {},
@@ -96,10 +102,11 @@ class ProjectTargetController extends Controller
     {
         $projectTarget = $this->service->create($request->validated());
 
-        return response()->json([
-            'message' => 'Project target created successfully',
-            'data' => new ProjectTargetResource($projectTarget),
-        ], 201);
+        return $this->responseSuccess(
+            __('project_targets.created'),
+            new ProjectTargetResource($projectTarget),
+            201
+        );
     }
 
     /**
@@ -152,10 +159,10 @@ class ProjectTargetController extends Controller
     {
         $projectTarget = $this->service->update($projectTarget, $request->validated());
 
-        return response()->json([
-            'message' => 'Project target updated successfully',
-            'data' => new ProjectTargetResource($projectTarget),
-        ]);
+        return $this->responseSuccess(
+            __('project_targets.updated'),
+            new ProjectTargetResource($projectTarget)
+        );
     }
 
     /**
@@ -173,9 +180,7 @@ class ProjectTargetController extends Controller
     {
         $this->service->delete($projectTarget);
 
-        return response()->json([
-            'message' => 'Project target deleted successfully',
-        ]);
+        return $this->responseSuccess(__('project_targets.deleted'));
     }
 
     /**
@@ -191,7 +196,7 @@ class ProjectTargetController extends Controller
         $target->update(['active' => !$target->active]);
 
         return $this->responseSuccess(
-            $target->active ? 'Cible activée avec succès' : 'Cible désactivée avec succès',
+            $target->active ? __('project_targets.status_activated') : __('project_targets.status_deactivated'),
             new ProjectTargetResource($target)
         );
     }

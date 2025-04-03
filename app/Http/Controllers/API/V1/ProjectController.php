@@ -41,19 +41,33 @@ class ProjectController extends Controller
      * Retourne une liste paginée des projets avec possibilité de filtrage et de tri.
      *
      * @queryParam name string Nom du projet. Example: Mon Projet
-     * @queryParam description string Description du projet. Example: Description du projet
-     * @queryParam is_active boolean État actif/inactif du projet. Example: true
+     * @queryParam allowed_domain string Domaine autorisé. Example: example.com
+     * @queryParam allowed_subdomain string Sous-domaine autorisé. Example: api
+     * @queryParam header string En-tête personnalisé. Example: X-Custom-Header
+     * @queryParam provider_config object Configuration du fournisseur. Example: {"key": "value"}
+     * @queryParam uuid string UUID du projet. Example: 123e4567-e89b-12d3-a456-426614174000
+     * @queryParam active boolean État actif/inactif du projet. Example: true
+     * @queryParam user_id integer ID de l'utilisateur propriétaire. Example: 1
+     * @queryParam from_date string Date de début (Y-m-d). Example: 2024-01-01
+     * @queryParam to_date string Date de fin (Y-m-d). Example: 2024-12-31
      * @queryParam sort string Champ de tri (-created_at pour ordre décroissant). Example: -created_at
-     * @queryParam include string Relations à inclure (targets). Example: targets
+     * @queryParam include string Relations à inclure (user,projectTargets,incomingRequests). Example: user,projectTargets
+     * @queryParam search string Recherche dans name, allowed_domain, allowed_subdomain, header, uuid. Example: api
      *
      * @response {
      *   "data": [
      *     {
      *       "id": 1,
      *       "name": "Mon Projet",
-     *       "description": "Description du projet",
-     *       "is_active": true,
-     *       "created_at": "2024-03-14T12:00:00+00:00"
+     *       "allowed_domain": "example.com",
+     *       "allowed_subdomain": "api",
+     *       "header": "X-Custom-Header",
+     *       "provider_config": {"key": "value"},
+     *       "uuid": "123e4567-e89b-12d3-a456-426614174000",
+     *       "active": true,
+     *       "user_id": 1,
+     *       "created_at": "2024-03-14T12:00:00+00:00",
+     *       "updated_at": "2024-03-14T12:00:00+00:00"
      *     }
      *   ],
      *   "links": {},
@@ -93,10 +107,11 @@ class ProjectController extends Controller
     {
         $project = $this->service->create($request->validated());
 
-        return response()->json([
-            'message' => 'Project created successfully',
-            'data' => new ProjectResource($project),
-        ], 201);
+        return $this->responseSuccess(
+            __('projects.created'),
+            new ProjectResource($project),
+            201
+        );
     }
 
     /**
@@ -147,10 +162,10 @@ class ProjectController extends Controller
     {
         $project = $this->service->update($project, $request->validated());
 
-        return response()->json([
-            'message' => 'Project updated successfully',
-            'data' => new ProjectResource($project),
-        ]);
+        return $this->responseSuccess(
+            __('projects.updated'),
+            new ProjectResource($project)
+        );
     }
 
     /**
@@ -168,9 +183,7 @@ class ProjectController extends Controller
     {
         $this->service->delete($project);
 
-        return response()->json([
-            'message' => 'Project deleted successfully',
-        ]);
+        return $this->responseSuccess(__('projects.deleted'));
     }
 
     /**
@@ -186,7 +199,7 @@ class ProjectController extends Controller
         $project->update(['active' => !$project->active]);
 
         return $this->responseSuccess(
-            $project->active ? 'Projet activé avec succès' : 'Projet désactivé avec succès',
+            $project->active ? __('projects.status_activated') : __('projects.status_deactivated'),
             new ProjectResource($project)
         );
     }

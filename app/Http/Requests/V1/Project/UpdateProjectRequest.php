@@ -3,32 +3,42 @@
 namespace App\Http\Requests\V1\Project;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateProjectRequest extends FormRequest
 {
+    /**
+     * Détermine si l'utilisateur est autorisé à faire cette requête.
+     */
     public function authorize(): bool
     {
         return true;
     }
 
+    /**
+     * Règles de validation pour la requête.
+     */
     public function rules(): array
     {
         return [
-            'name' => ['sometimes', 'required', 'string', 'max:255'],
-            'allowed_domain' => ['sometimes', 'required', 'string', 'max:255', 'regex:/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/'],
-            'allowed_subdomain' => ['sometimes', 'nullable', 'string', 'max:255', 'url', 'regex:/^https:\/\/[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9])*(?:\.[a-zA-Z]{2,})+$/'],
-            'header' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'provider_config' => ['sometimes', 'nullable', 'array'],
-            'active' => ['sometimes', 'boolean'],
+            'name' => ['sometimes', 'string', 'max:255', Rule::unique('projects', 'name')->ignore($this->project)],
+            'description' => ['nullable', 'string', 'max:1000'],
+            'is_active' => ['boolean'],
         ];
     }
 
+    /**
+     * Messages d'erreur personnalisés.
+     */
     public function messages(): array
     {
         return [
-            'allowed_domain.regex' => 'Le domaine doit être valide (exemple: example.com)',
-            'allowed_subdomain.regex' => 'Le sous-domaine doit être une URL complète valide (exemple: https://app.example.com)',
-            'allowed_subdomain.url' => 'Le sous-domaine doit être une URL valide',
+            'name.string' => __('api.validation.string', ['attribute' => __('projects.attributes.name')]),
+            'name.max' => __('api.max', ['attribute' => __('projects.attributes.name'), 'max' => 255]),
+            'name.unique' => __('projects.already_exists'),
+            'description.string' => __('api.validation.string', ['attribute' => __('projects.attributes.description')]),
+            'description.max' => __('api.max', ['attribute' => __('projects.attributes.description'), 'max' => 1000]),
+            'is_active.boolean' => __('api.validation.boolean', ['attribute' => __('projects.attributes.is_active')]),
         ];
     }
 }

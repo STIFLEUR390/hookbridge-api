@@ -35,10 +35,17 @@ class DeliveryAttemptController extends Controller
      *
      * @queryParam incoming_request_id integer ID de la requête entrante. Example: 1
      * @queryParam project_target_id integer ID de la cible du projet. Example: 1
-     * @queryParam status string Statut de la tentative (pending/in_progress/success/failed). Example: success
+     * @queryParam attempt_count integer Nombre de tentatives. Example: 3
+     * @queryParam status string Statut de la tentative. Example: pending
      * @queryParam response_code integer Code de réponse HTTP. Example: 200
+     * @queryParam response_body string Corps de la réponse. Example: {"status": "success"}
+     * @queryParam next_attempt_at datetime Date de la prochaine tentative. Example: 2024-03-14T12:00:00+00:00
+     * @queryParam last_attempt_at datetime Date de la dernière tentative. Example: 2024-03-14T12:00:00+00:00
+     * @queryParam from_date string Date de début (Y-m-d). Example: 2024-01-01
+     * @queryParam to_date string Date de fin (Y-m-d). Example: 2024-12-31
      * @queryParam sort string Champ de tri (-created_at pour ordre décroissant). Example: -created_at
      * @queryParam include string Relations à inclure (incomingRequest,projectTarget). Example: incomingRequest
+     * @queryParam search string Recherche dans status, response_body et response_code. Example: success
      *
      * @response {
      *   "data": [
@@ -51,7 +58,9 @@ class DeliveryAttemptController extends Controller
      *       "response_code": 200,
      *       "response_body": {"status": "success", "message": "Webhook received"},
      *       "next_attempt_at": null,
-     *       "last_attempt_at": "2024-03-14T12:00:00+00:00"
+     *       "last_attempt_at": "2024-03-14T12:00:00+00:00",
+     *       "created_at": "2024-03-14T12:00:00+00:00",
+     *       "updated_at": "2024-03-14T12:00:00+00:00"
      *     }
      *   ],
      *   "links": {},
@@ -95,7 +104,7 @@ class DeliveryAttemptController extends Controller
         $deliveryAttempt = $this->service->create($request->validated());
 
         return response()->json([
-            'message' => 'Delivery attempt created successfully',
+            'message' => __('delivery_attempts.created'),
             'data' => new DeliveryAttemptResource($deliveryAttempt),
         ], 201);
     }
@@ -158,7 +167,7 @@ class DeliveryAttemptController extends Controller
         $deliveryAttempt = $this->service->update($deliveryAttempt, $request->validated());
 
         return response()->json([
-            'message' => 'Delivery attempt updated successfully',
+            'message' => __('delivery_attempts.updated'),
             'data' => new DeliveryAttemptResource($deliveryAttempt),
         ]);
     }
@@ -179,7 +188,7 @@ class DeliveryAttemptController extends Controller
         $this->service->delete($deliveryAttempt);
 
         return response()->json([
-            'message' => 'Delivery attempt deleted successfully',
+            'message' => __('delivery_attempts.deleted'),
         ]);
     }
 }
