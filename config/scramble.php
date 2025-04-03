@@ -30,7 +30,7 @@ return [
         'description' => <<<'EOT'
 # API HookBridge
 
-Cette API permet de gérer les projets et leurs configurations pour le service HookBridge.
+Cette API permet de gérer les projets et leurs configurations pour le service HookBridge, un système de gestion de webhooks et de callbacks.
 
 ## Authentification
 
@@ -38,6 +38,7 @@ L'API utilise l'authentification par token Sanctum. Pour utiliser l'API, vous de
 
 1. Obtenir un token d'authentification via la route `/api/v1/auth/login`
 2. Inclure le token dans l'en-tête `Authorization: Bearer {token}` de vos requêtes
+3. Rafraîchir votre token via `/api/v1/auth/refresh` avant expiration
 
 ## Projets
 
@@ -48,12 +49,34 @@ Les projets sont les entités principales de l'API. Chaque projet contient :
 - Un sous-domaine optionnel (URL complète)
 - Une configuration de fournisseur
 - Un statut actif/inactif
+- Des cibles de projet associées
+
+## Cibles de Projet
+
+Les cibles de projet définissent les destinations des webhooks et callbacks :
+
+- URL de destination
+- Méthode HTTP (GET, POST, etc.)
+- En-têtes personnalisés
+- Corps de requête personnalisé
+- Statut actif/inactif
+
+## Requêtes Entrantes
+
+L'API permet de suivre et gérer les requêtes entrantes :
+
+- Historique des webhooks reçus
+- Statut de livraison
+- Tentatives de livraison
+- Logs détaillés
 
 ## Sécurité
 
 - Toutes les routes sont protégées par authentification
 - Les utilisateurs ne peuvent accéder qu'à leurs propres projets
 - Les tokens d'authentification expirent après 24 heures
+- Validation des domaines autorisés pour les webhooks
+- Protection contre les attaques CSRF
 EOT
     ],
 
