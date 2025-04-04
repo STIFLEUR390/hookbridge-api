@@ -119,10 +119,20 @@ class ProcessWebhookDelivery implements ShouldQueue
             // Formater les données du webhook
             $webhookData = $this->formatWebhookData();
 
+            $headers = [
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ];
+
+            if ($this->incomingRequest->project->provider_config['require_signature']) {
+                $headers['verif-hash'] = $this->incomingRequest->project->provider_config['require_signature'];
+            }
+
             // Envoyer le webhook
-            $response = Http::withHeaders($this->projectTarget->headers ?? [])
+            $response = Http::withHeaders($headers)
                 ->timeout(30)
-                ->post($this->projectTarget->url, $webhookData)->json();
+                ->post($this->projectTarget->url, $webhookData)
+                ->json();
 
             // Mettre à jour la tentative de livraison
             $deliveryAttempt->update([
@@ -188,7 +198,7 @@ class ProcessWebhookDelivery implements ShouldQueue
         }
 
         // Formater le payload selon le type de requête
-        $event = $this->incomingRequest->type;
+        $event = 'generated';
         $data = $payload;
 
         // Si le payload est une chaîne, essayer de le décoder
@@ -200,10 +210,10 @@ class ProcessWebhookDelivery implements ShouldQueue
         }
 
         return [
+            'id' => $this->incomingRequest->id,
             'event' => $event,
             'data' => $data,
             'timestamp' => now()->toIso8601String(),
-            'request_id' => $this->incomingRequest->id,
         ];
     }
 

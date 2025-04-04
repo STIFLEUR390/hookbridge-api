@@ -9,7 +9,6 @@ use App\Models\V1\IncomingRequest;
 use App\Models\V1\ProjectTarget;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
 
 class HookController extends Controller
 {
@@ -197,5 +196,93 @@ class HookController extends Controller
         if (!$project->active) {
             abort(403, 'Projet inactif');
         }
+    }
+
+    /**
+     * Réessaie l'envoi d'un webhook qui a échoué.
+     *
+     * @param IncomingRequest $incomingRequest
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function retrySendingWebhook(IncomingRequest $incomingRequest)
+    {
+        // Vérifier si la requête est déjà en cours de traitement
+        if ($incomingRequest->status === 'processing') {
+            return response()->json([
+                'status' => 409,
+                'message' => 'Cette requête est déjà en cours de traitement',
+                'data' => [
+                    'request_id' => $incomingRequest->id,
+                    'status' => $incomingRequest->status
+                ]
+            ], 409);
+        }
+
+        // Charger les relations nécessaires une seule fois
+        $incomingRequest->load('project.user');
+
+        // Vérifier si le projet existe et est actif
+        if (!$incomingRequest->project || !$incomingRequest->project->active) {
+            return response()->json([
+                'status' => 400,
+                'message' => 'Le projet associé à cette requête n\'existe pas ou est inactif',
+                'data' => [
+                    'request_id' => $incomingRequest->id
+                ]
+            ], 400);
+        }
+
+        // Récupérer les cibles actives du projet
+        $projectTargets = ProjectTarget::where('project_id', $incomingRequest->project->id)
+            ->where('active', true)
+            ->get();
+
+        if ($projectTargets->isEmpty()) {
+            return response()->json([
+                'status' => 400,
+                'message' => 'Aucune cible active trouvée pour ce projet',
+                'data' => [
+                    'request_id' => $incomingRequest->id,
+                    'project_id' => $incomingRequest->project->id
+                ]
+            ], 400);
+        }
+
+        // Mettre à jour le statut de la requête
+        $incomingRequest->update(['status' => 'processing']);
+
+        // Dispatcher les jobs pour chaque cible
+        foreach ($projectTargets as $target) {
+            ProcessWebhookDelivery::dispatch($incomingRequest, $target);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Webhook réessayé avec succès',
+            'data' => [
+                'request_id' => $incomingRequest->id,
+                'targets_count' => $projectTargets->count()
+            ]
+        ], 200);
+    }
+
+    /**
+     * Endpoint de test pour recevoir des webhooks sans vérification.
+     * Utile pour les tests locaux.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function testWebhook(Request $request)
+    {
+
+        ds()->clear();
+        ds($request->all());
+        ds($request->headers->all());
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Webhook de test reçu avec succès',
+        ], 200);
     }
 }

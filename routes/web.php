@@ -5,11 +5,19 @@ use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/docs/api');
 
-Route::any('hook/callback/{uuid}', [HookController::class, 'handleCallback'])
-    ->middleware('validate.project.uuid')->name("hook.callback");
 
-Route::any('hook/webhook/{uuid}', [HookController::class, 'handleWebhook'])
-    ->middleware('validate.project.uuid')->name("hook.webhook");
+/*===========================
+=           Webhooks           =
+=============================*/
+
+// Routes pour les webhooks et callbacks
+Route::get('/hook/callback/{uuid}', [HookController::class, 'handleCallback'])->name("hook.callback");
+Route::post('/hook/webhook/{uuid}', [HookController::class, 'handleWebhook'])->name("hook.webhook");
+
+// Route de test pour les webhooks (sans vérification)
+Route::post('/hook/test', [HookController::class, 'testWebhook']);
+
+/*=====  End of Webhooks   ======*/
 
 /*
 Route::get('/', function () {

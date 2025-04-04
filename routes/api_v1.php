@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\V1\ProfileController;
 use App\Http\Controllers\API\V1\PasswordResetController;
+use App\Http\Controllers\API\V1\HookController;
 
 // Routes d'authentification
 Route::prefix('auth')->group(function () {
@@ -39,14 +40,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/project-targets', \App\Http\Controllers\API\V1\ProjectTargetController::class);
     Route::patch('/project-targets/{target}/toggle-status', [\App\Http\Controllers\API\V1\ProjectTargetController::class, 'toggleStatus']);
 
-    Route::apiResource('/incoming-requests', \App\Http\Controllers\API\V1\IncomingRequestController::class);
+    Route::apiResource('/incoming-requests', \App\Http\Controllers\API\V1\IncomingRequestController::class)->only(['index', 'show']);
+
+    // Route pour réessayer l'envoi d'un webhook
+    Route::post('/incoming-requests/{incomingRequest}/retry', [HookController::class, 'retrySendingWebhook']);
+
+    Route::apiResource('/deliveryAttempts', \App\Http\Controllers\API\V1\DeliveryAttemptController::class)->only(['index', 'show']);
 
 });
-
-/*===========================
-=           deliveryAttempts           =
-=============================*/
-
-Route::apiResource('/deliveryAttempts', \App\Http\Controllers\API\V1\DeliveryAttemptController::class);
-
-/*=====  End of deliveryAttempts   ======*/
