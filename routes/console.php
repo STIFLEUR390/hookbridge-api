@@ -12,8 +12,7 @@ Artisan::command('queue:start', function (): void {
         '--timeout' => 60,
         '--sleep' => 3,
         '--max-jobs' => 1000,
-        '--max-time' => 3600,
-        '--stop-when-empty' => true,
+        '--max-time' => 3600
     ]);
 })->purpose('Démarrer le worker de queue avec les paramètres optimisés pour la production')
 ->everyMinute();
