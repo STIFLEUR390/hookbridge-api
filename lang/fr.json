@@ -201,6 +201,12 @@
     "profile.password_updated_successfully": "Mot de passe mis à jour avec succès",
     "profile.retrieved_successfully": "Profil récupéré avec succès",
     "profile.updated_successfully": "Profil mis à jour avec succès",
+    "projects.created": "Projet créé avec succès",
+    "projects.deleted": "Projet supprimé avec succès",
+    "projects.not_found": "Projet non trouvé",
+    "projects.status_activated": "Projet activé avec succès",
+    "projects.status_deactivated": "Projet désactivé avec succès",
+    "projects.updated": "Projet mis à jour avec succès",
     "Proxy Authentication Required": "Authentification proxy requise",
     "Railgun Error": "Erreur de Railgun",
     "Range Not Satisfiable": "Plage non satisfaisante",
@@ -279,5 +285,41 @@
     "Web Server is Down": "Le serveur Web est en panne",
     "Whoops!": "Oups !",
     "Yes": "Oui",
-    "You are receiving this email because we received a password reset request for your account.": "Vous recevez cet e-mail car nous avons reçu une demande de réinitialisation de mot de passe pour votre compte."
+    "You are receiving this email because we received a password reset request for your account.": "Vous recevez cet e-mail car nous avons reçu une demande de réinitialisation de mot de passe pour votre compte.",
+    "auth": {
+        "failed": "Ces identifiants ne correspondent pas à nos enregistrements.",
+        "password": "Le mot de passe fourni est incorrect.",
+        "throttle": "Trop de tentatives de connexion. Veuillez réessayer dans :seconds secondes."
+    },
+    "projects": {
+        "created": "Projet créé avec succès",
+        "deleted": "Projet supprimé avec succès",
+        "not_found": "Projet non trouvé",
+        "status_activated": "Projet activé avec succès",
+        "status_deactivated": "Projet désactivé avec succès",
+        "updated": "Projet mis à jour avec succès"
+    },
+    "delivery_attempts": {
+        "created": "Tentative de livraison créée avec succès",
+        "deleted": "Tentative de livraison supprimée avec succès",
+        "not_found": "Tentative de livraison non trouvée",
+        "updated": "Tentative de livraison mise à jour avec succès"
+    },
+    "incoming_requests": {
+        "created": "Requête entrante créée avec succès",
+        "deleted": "Requête entrante supprimée avec succès",
+        "not_found": "Requête entrante non trouvée",
+        "updated": "Requête entrante mise à jour avec succès",
+        "processing": "Cette requête est déjà en cours de traitement",
+        "project_inactive": "Le projet associé à cette requête n'existe pas ou est inactif",
+        "no_active_targets": "Aucune cible active trouvée pour ce projet",
+        "webhook_received": "Webhook reçu avec succès",
+        "webhook_retried": "Webhook réessayé avec succès",
+        "test_webhook_received": "Webhook de test reçu avec succès",
+        "unauthorized_domain": "Domaine non autorisé",
+        "unauthorized_subdomain": "Sous-domaine non autorisé",
+        "missing_signature": "Signature manquante",
+        "invalid_signature": "Signature non valide",
+        "inactive_project": "Projet inactif"
+    }
 }

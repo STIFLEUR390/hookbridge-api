@@ -201,6 +201,12 @@
     "profile.password_updated_successfully": "Password updated successfully",
     "profile.retrieved_successfully": "Profile retrieved successfully",
     "profile.updated_successfully": "Profile updated successfully",
+    "projects.created": "Project created successfully",
+    "projects.deleted": "Project deleted successfully",
+    "projects.not_found": "Project not found",
+    "projects.status_activated": "Project activated successfully",
+    "projects.status_deactivated": "Project deactivated successfully",
+    "projects.updated": "Project updated successfully",
     "Proxy Authentication Required": "Proxy Authentication Required",
     "Railgun Error": "Railgun Error",
     "Range Not Satisfiable": "Range Not Satisfiable",
@@ -279,5 +285,41 @@
     "Web Server is Down": "Web Server is Down",
     "Whoops!": "Whoops!",
     "Yes": "Yes",
-    "You are receiving this email because we received a password reset request for your account.": "You are receiving this email because we received a password reset request for your account."
+    "You are receiving this email because we received a password reset request for your account.": "You are receiving this email because we received a password reset request for your account.",
+    "auth": {
+        "failed": "These credentials do not match our records.",
+        "password": "The provided password is incorrect.",
+        "throttle": "Too many login attempts. Please try again in :seconds seconds."
+    },
+    "projects": {
+        "created": "Project created successfully",
+        "deleted": "Project deleted successfully",
+        "not_found": "Project not found",
+        "status_activated": "Project activated successfully",
+        "status_deactivated": "Project deactivated successfully",
+        "updated": "Project updated successfully"
+    },
+    "delivery_attempts": {
+        "created": "Delivery attempt created successfully",
+        "deleted": "Delivery attempt deleted successfully",
+        "not_found": "Delivery attempt not found",
+        "updated": "Delivery attempt updated successfully"
+    },
+    "incoming_requests": {
+        "created": "Incoming request created successfully",
+        "deleted": "Incoming request deleted successfully",
+        "not_found": "Incoming request not found",
+        "updated": "Incoming request updated successfully",
+        "processing": "This request is already being processed",
+        "project_inactive": "The project associated with this request does not exist or is inactive",
+        "no_active_targets": "No active targets found for this project",
+        "webhook_received": "Webhook received successfully",
+        "webhook_retried": "Webhook retried successfully",
+        "test_webhook_received": "Test webhook received successfully",
+        "unauthorized_domain": "Unauthorized domain",
+        "unauthorized_subdomain": "Unauthorized subdomain",
+        "missing_signature": "Missing signature",
+        "invalid_signature": "Invalid signature",
+        "inactive_project": "Inactive project"
+    }
 }
