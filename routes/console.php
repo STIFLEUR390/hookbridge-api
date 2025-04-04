@@ -13,19 +13,21 @@ Artisan::command('queue:start', function (): void {
         '--sleep' => 3,
         '--max-jobs' => 1000,
         '--max-time' => 3600,
+        '--stop-when-empty' => true,
     ]);
-})->purpose('Démarrer le worker de queue avec les paramètres optimisés pour la production');
+})->purpose('Démarrer le worker de queue avec les paramètres optimisés pour la production')
+->everyMinute();
 
 // Commande pour nettoyer les jobs échoués
 Artisan::command('queue:cleanup', function (): void {
     $this->info('Nettoyage des jobs échoués...');
-    $this->call('queue:prune-failed', [
-        '--hours' => 24,
-    ]);
-})->purpose('Nettoyer les jobs échoués de plus de 24 heures');
+    $this->call('queue:prune-failed');
+})->purpose('Nettoyer les jobs échoués de plus de 24 heures')
+->hourlyAt(17);
 
 // Commande pour redémarrer les workers
 Artisan::command('queue:restart-workers', function (): void {
     $this->info('Redémarrage des workers de queue...');
     $this->call('queue:restart');
-})->purpose('Redémarrer tous les workers de queue');
+})->purpose('Redémarrer tous les workers de queue')
+->dailyAt('01:00');
