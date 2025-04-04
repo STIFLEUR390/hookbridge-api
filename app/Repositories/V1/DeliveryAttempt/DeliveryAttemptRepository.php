@@ -1,15 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories\V1\DeliveryAttempt;
 
 use App\Models\V1\DeliveryAttempt;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-class DeliveryAttemptRepository implements DeliveryAttemptRepositoryInterface
+final class DeliveryAttemptRepository implements DeliveryAttemptRepositoryInterface
 {
-    public function __construct(protected DeliveryAttempt $model)
-    {
-    }
+    public function __construct(protected DeliveryAttempt $model) {}
 
     public function getAll(array $filters = []): LengthAwarePaginator
     {

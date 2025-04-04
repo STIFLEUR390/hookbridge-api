@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
@@ -9,7 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
-class ProfileController extends Controller
+final class ProfileController extends Controller
 {
     /**
      * Mettre à jour le profil de l'utilisateur.
@@ -31,7 +33,7 @@ class ProfileController extends Controller
 
         return $this->responseSuccess(
             __('profile.updated_successfully'),
-            ['user' => $user]
+            ['user' => $user],
         );
     }
 
@@ -51,7 +53,7 @@ class ProfileController extends Controller
 
         return $this->responseSuccess(
             __('profile.password_updated_successfully'),
-            ['message' => __('auth.please_login_again')]
+            ['message' => __('auth.please_login_again')],
         );
     }
 
@@ -64,7 +66,7 @@ class ProfileController extends Controller
 
         return $this->responseSuccess(
             __('profile.retrieved_successfully'),
-            ['user' => $user]
+            ['user' => $user],
         );
     }
 }

@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\ProcessWebhookDelivery;
-use App\Models\V1\Project;
 use App\Models\V1\IncomingRequest;
+use App\Models\V1\Project;
 use App\Models\V1\ProjectTarget;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
-class HookController extends Controller
+final class HookController extends Controller
 {
     /**
      * La fenêtre de temps (en minutes) pour la validation de la signature.
@@ -30,10 +32,10 @@ class HookController extends Controller
     public function handleCallback(Request $request, $uuid)
     {
         // Vérifier que la méthode est GET
-        if ($request->method() !== 'GET') {
+        if ('GET' !== $request->method()) {
             return response()->json([
                 'status' => 405,
-                'message' => 'Méthode non autorisée. Les callbacks n\'acceptent que les requêtes GET.'
+                'message' => 'Méthode non autorisée. Les callbacks n\'acceptent que les requêtes GET.',
             ], 405);
         }
 
@@ -67,7 +69,7 @@ class HookController extends Controller
             'project_id' => $project->id,
             'request_id' => $incomingRequest->id,
             'uuid' => $uuid,
-            'targets_count' => $projectTargets->count()
+            'targets_count' => $projectTargets->count(),
         ]);
 
         return response()->json([
@@ -76,8 +78,8 @@ class HookController extends Controller
             'data' => [
                 'request_id' => $incomingRequest->id,
                 'uuid' => $uuid,
-                'targets_count' => $projectTargets->count()
-            ]
+                'targets_count' => $projectTargets->count(),
+            ],
         ], 201);
     }
 
@@ -92,10 +94,10 @@ class HookController extends Controller
     public function handleWebhook(Request $request, $uuid)
     {
         // Vérifier que la méthode est POST
-        if ($request->method() !== 'POST') {
+        if ('POST' !== $request->method()) {
             return response()->json([
                 'status' => 405,
-                'message' => 'Méthode non autorisée. Les webhooks n\'acceptent que les requêtes POST.'
+                'message' => 'Méthode non autorisée. Les webhooks n\'acceptent que les requêtes POST.',
             ], 405);
         }
 
@@ -132,7 +134,7 @@ class HookController extends Controller
             'project_id' => $project->id,
             'request_id' => $incomingRequest->id,
             'uuid' => $uuid,
-            'targets_count' => $projectTargets->count()
+            'targets_count' => $projectTargets->count(),
         ]);
 
         return response()->json([
@@ -141,61 +143,9 @@ class HookController extends Controller
             'data' => [
                 'request_id' => $incomingRequest->id,
                 'uuid' => $uuid,
-                'targets_count' => $projectTargets->count()
-            ]
+                'targets_count' => $projectTargets->count(),
+            ],
         ], 201);
-    }
-
-    /**
-     * Valide la requête en fonction des règles du projet.
-     *
-     * @param Request $request
-     * @param Project $project
-     * @return void
-     */
-    private function validateRequest(Request $request, Project $project)
-    {
-        // Vérifier si le domaine est autorisé
-        if ($project->allowed_domain) {
-            $host = $request->host();
-            if (!$host || !str_contains($host, $project->allowed_domain)) {
-                abort(403, 'Domaine non autorisé');
-            }
-        }
-
-        // Vérifier si le sous-domaine est autorisé
-        if ($project->allowed_subdomain) {
-            $host = $host = $request->host();
-            if (!$host || !str_contains($host, $project->allowed_subdomain)) {
-                abort(403, 'Sous-domaine non autorisé');
-            }
-        }
-
-        // Vérifier la signature si configurée dans le projet
-        if (isset($project->provider_config['require_signature']) && $project->provider_config['require_signature']) {
-            $signature = $request->header('verif-hash');
-            $secretHash = $project->provider_config['require_signature'];
-
-            if (!$signature) {
-                abort(401, 'Signature manquante');
-            }
-
-            if (!$signature || ($signature !== $secretHash)) {
-                Log::warning('Signature invalide', [
-                    'project_id' => $project->id,
-                    'signature' => $signature,
-                    'ip' => $request->ip(),
-                    'user_agent' => $request->userAgent(),
-                ]);
-
-                abort(401, 'Signature non valide');
-            }
-        }
-
-        // Vérifier si le projet est actif
-        if (!$project->active) {
-            abort(403, 'Projet inactif');
-        }
     }
 
     /**
@@ -207,14 +157,14 @@ class HookController extends Controller
     public function retrySendingWebhook(IncomingRequest $incomingRequest)
     {
         // Vérifier si la requête est déjà en cours de traitement
-        if ($incomingRequest->status === 'processing') {
+        if ('processing' === $incomingRequest->status) {
             return response()->json([
                 'status' => 409,
                 'message' => 'Cette requête est déjà en cours de traitement',
                 'data' => [
                     'request_id' => $incomingRequest->id,
-                    'status' => $incomingRequest->status
-                ]
+                    'status' => $incomingRequest->status,
+                ],
             ], 409);
         }
 
@@ -222,13 +172,13 @@ class HookController extends Controller
         $incomingRequest->load('project.user');
 
         // Vérifier si le projet existe et est actif
-        if (!$incomingRequest->project || !$incomingRequest->project->active) {
+        if ( ! $incomingRequest->project || ! $incomingRequest->project->active) {
             return response()->json([
                 'status' => 400,
                 'message' => 'Le projet associé à cette requête n\'existe pas ou est inactif',
                 'data' => [
-                    'request_id' => $incomingRequest->id
-                ]
+                    'request_id' => $incomingRequest->id,
+                ],
             ], 400);
         }
 
@@ -243,8 +193,8 @@ class HookController extends Controller
                 'message' => 'Aucune cible active trouvée pour ce projet',
                 'data' => [
                     'request_id' => $incomingRequest->id,
-                    'project_id' => $incomingRequest->project->id
-                ]
+                    'project_id' => $incomingRequest->project->id,
+                ],
             ], 400);
         }
 
@@ -261,8 +211,8 @@ class HookController extends Controller
             'message' => 'Webhook réessayé avec succès',
             'data' => [
                 'request_id' => $incomingRequest->id,
-                'targets_count' => $projectTargets->count()
-            ]
+                'targets_count' => $projectTargets->count(),
+            ],
         ], 200);
     }
 
@@ -275,14 +225,61 @@ class HookController extends Controller
      */
     public function testWebhook(Request $request)
     {
-
-        ds()->clear();
-        ds($request->all());
-        ds($request->headers->all());
-
         return response()->json([
             'status' => 200,
             'message' => 'Webhook de test reçu avec succès',
         ], 200);
+    }
+
+    /**
+     * Valide la requête en fonction des règles du projet.
+     *
+     * @param Request $request
+     * @param Project $project
+     * @return void
+     */
+    private function validateRequest(Request $request, Project $project): void
+    {
+        // Vérifier si le domaine est autorisé
+        if ($project->allowed_domain) {
+            $host = $request->host();
+            if ( ! $host || ! str_contains($host, $project->allowed_domain)) {
+                abort(403, 'Domaine non autorisé');
+            }
+        }
+
+        // Vérifier si le sous-domaine est autorisé
+        if ($project->allowed_subdomain) {
+            $host = $host = $request->host();
+            if ( ! $host || ! str_contains($host, $project->allowed_subdomain)) {
+                abort(403, 'Sous-domaine non autorisé');
+            }
+        }
+
+        // Vérifier la signature si configurée dans le projet
+        if (isset($project->provider_config['require_signature']) && $project->provider_config['require_signature']) {
+            $signature = $request->header('verif-hash');
+            $secretHash = $project->provider_config['require_signature'];
+
+            if ( ! $signature) {
+                abort(401, 'Signature manquante');
+            }
+
+            if ( ! $signature || ($signature !== $secretHash)) {
+                Log::warning('Signature invalide', [
+                    'project_id' => $project->id,
+                    'signature' => $signature,
+                    'ip' => $request->ip(),
+                    'user_agent' => $request->userAgent(),
+                ]);
+
+                abort(401, 'Signature non valide');
+            }
+        }
+
+        // Vérifier si le projet est actif
+        if ( ! $project->active) {
+            abort(403, 'Projet inactif');
+        }
     }
 }

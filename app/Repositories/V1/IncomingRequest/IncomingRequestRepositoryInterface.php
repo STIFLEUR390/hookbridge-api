@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories\V1\IncomingRequest;
 
 use App\Models\V1\IncomingRequest;

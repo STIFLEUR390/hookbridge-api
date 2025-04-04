@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
-class UpdatePasswordRequest extends FormRequest
+final class UpdatePasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +26,8 @@ class UpdatePasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'current_password' => ['required', 'string', function ($attribute, $value, $fail) {
-                if (!Hash::check($value, $this->user()->password)) {
+            'current_password' => ['required', 'string', function ($attribute, $value, $fail): void {
+                if ( ! Hash::check($value, $this->user()->password)) {
                     $fail(__('auth.current_password_incorrect'));
                 }
             }],

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\V1;
 
 use App\Filters\V1\IncomingRequestFilters;
@@ -10,9 +12,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
 
-class IncomingRequest extends Model
+final class IncomingRequest extends Model
 {
-    use HasFactory, Filterable, CascadesDeletes;
+    use CascadesDeletes;
+    use Filterable;
+    use HasFactory;
 
     protected string $default_filters = IncomingRequestFilters::class;
 
@@ -23,12 +27,12 @@ class IncomingRequest extends Model
      */
     protected $fillable = [
         'project_id',
-		'type',
-		'http_method',
-		'headers',
-		'payload',
-		'status',
-		'received_at',
+        'type',
+        'http_method',
+        'headers',
+        'payload',
+        'status',
+        'received_at',
     ];
 
     /**
@@ -39,6 +43,19 @@ class IncomingRequest extends Model
     protected $cascadeDeletes = [
         'deliveryAttempts',
     ];
+
+    public function project(): BelongsTo
+    {
+        return $this->belongsTo(Project::class);
+    }
+
+    /**
+     * Obtenir les tentatives de livraison de la requête.
+     */
+    public function deliveryAttempts(): HasMany
+    {
+        return $this->hasMany(DeliveryAttempt::class);
+    }
 
     /**
      * The attributes that should be cast.
@@ -52,18 +69,5 @@ class IncomingRequest extends Model
             'payload' => 'array',
             'received_at' => 'datetime',
         ];
-    }
-
-	public function project(): BelongsTo
-	{
-		return $this->belongsTo(Project::class);
-	}
-
-    /**
-     * Obtenir les tentatives de livraison de la requête.
-     */
-    public function deliveryAttempts(): HasMany
-    {
-        return $this->hasMany(DeliveryAttempt::class);
     }
 }

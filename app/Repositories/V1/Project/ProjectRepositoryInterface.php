@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories\V1\Project;
 
 use App\Models\V1\Project;

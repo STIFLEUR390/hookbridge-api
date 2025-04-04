@@ -1,15 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories\V1\Project;
 
 use App\Models\V1\Project;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-class ProjectRepository implements ProjectRepositoryInterface
+final class ProjectRepository implements ProjectRepositoryInterface
 {
-    public function __construct(protected Project $model)
-    {
-    }
+    public function __construct(protected Project $model) {}
 
     public function getAll(array $filters = []): LengthAwarePaginator
     {

@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories\V1;
 
 use App\Models\V1\Project;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class ProjectTargetFactory extends Factory
+final class ProjectTargetFactory extends Factory
 {
     public function definition(): array
     {

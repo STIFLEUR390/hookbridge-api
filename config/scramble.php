@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Dedoc\Scramble\Http\Middleware\RestrictedDocsAccess;
 
 return [
@@ -77,7 +79,7 @@ L'API permet de suivre et gérer les requêtes entrantes :
 - Les tokens d'authentification expirent après 24 heures
 - Validation des domaines autorisés pour les webhooks
 - Protection contre les attaques CSRF
-EOT
+EOT,
     ],
 
     /*

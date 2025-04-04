@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
@@ -9,13 +11,11 @@ use App\Http\Resources\V1\Project\ProjectResource;
 use App\Models\V1\Project;
 use App\Services\V1\Project\ProjectService;
 use Dedoc\Scramble\Attributes\Group;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Str;
+use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Support\Facades\Auth;
-use Dedoc\Scramble\Attributes\QueryParameter;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 /**
  * Gestion des projets HookBridge
@@ -26,14 +26,14 @@ use Dedoc\Scramble\Attributes\QueryParameter;
  * @tags Projects
  */
 #[Group('Projects API', weight: 3)]
-class ProjectController extends Controller
+final class ProjectController extends Controller
 {
-    use AuthorizesRequests, ValidatesRequests;
+    use AuthorizesRequests;
+    use ValidatesRequests;
 
     public function __construct(
-        protected ProjectService $service
-    ) {
-    }
+        protected ProjectService $service,
+    ) {}
 
     /**
      * Liste des projets
@@ -129,7 +129,7 @@ class ProjectController extends Controller
         return response()->json([
             'status' => 201,
             'message' => __('projects.created'),
-            'data' => new ProjectResource($project)
+            'data' => new ProjectResource($project),
         ], 201);
     }
 
@@ -185,7 +185,7 @@ class ProjectController extends Controller
         return response()->json([
             'status' => 200,
             'message' => __('projects.updated'),
-            'data' => new ProjectResource($project)
+            'data' => new ProjectResource($project),
         ]);
     }
 
@@ -206,7 +206,7 @@ class ProjectController extends Controller
 
         return response()->json([
             'status' => 204,
-            'message' => __('projects.deleted')
+            'message' => __('projects.deleted'),
         ], 204);
     }
 
@@ -220,12 +220,12 @@ class ProjectController extends Controller
     {
         $this->authorize('update', $project);
 
-        $project->update(['active' => !$project->active]);
+        $project->update(['active' => ! $project->active]);
 
         return response()->json([
             'status' => 200,
             'message' => $project->active ? __('projects.status_activated') : __('projects.status_deactivated'),
-            'data' => new ProjectResource($project)
+            'data' => new ProjectResource($project),
         ]);
     }
 }

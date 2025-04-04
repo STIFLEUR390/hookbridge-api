@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filters\V1;
 
 use Essa\APIToolKit\Filters\QueryFilters;
 use Essa\APIToolKit\Traits\DateFilter;
 
-class IncomingRequestFilters extends QueryFilters
+final class IncomingRequestFilters extends QueryFilters
 {
     use DateFilter;
 

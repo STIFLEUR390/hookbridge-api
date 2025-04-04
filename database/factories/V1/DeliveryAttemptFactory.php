@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories\V1;
 
 use App\Models\V1\DeliveryAttempt;
@@ -7,7 +9,7 @@ use App\Models\V1\IncomingRequest;
 use App\Models\V1\ProjectTarget;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class DeliveryAttemptFactory extends Factory
+final class DeliveryAttemptFactory extends Factory
 {
     protected $model = DeliveryAttempt::class;
 
@@ -35,7 +37,7 @@ class DeliveryAttemptFactory extends Factory
      */
     public function pending(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'status' => 'pending',
             'response_code' => null,
             'response_body' => null,
@@ -48,7 +50,7 @@ class DeliveryAttemptFactory extends Factory
      */
     public function inProgress(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'status' => 'in_progress',
             'next_attempt_at' => null,
         ]);
@@ -59,7 +61,7 @@ class DeliveryAttemptFactory extends Factory
      */
     public function success(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'status' => 'success',
             'response_code' => 200,
             'response_body' => json_encode(['status' => 'success', 'message' => 'Webhook received']),
@@ -72,7 +74,7 @@ class DeliveryAttemptFactory extends Factory
      */
     public function failed(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'status' => 'failed',
             'response_code' => $this->faker->randomElement([400, 401, 403, 404, 500, 502, 503]),
             'response_body' => json_encode(['error' => $this->faker->sentence()]),

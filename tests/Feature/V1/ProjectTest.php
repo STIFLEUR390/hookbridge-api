@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\V1;
 
 use App\Models\User;
@@ -7,7 +9,7 @@ use App\Models\V1\Project;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class ProjectTest extends TestCase
+final class ProjectTest extends TestCase
 {
     use RefreshDatabase;
 

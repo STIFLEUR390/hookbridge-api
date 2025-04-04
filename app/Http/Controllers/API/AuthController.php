@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
-use Illuminate\Validation\ValidationException;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\PersonalAccessToken;
 
-class AuthController extends Controller
+final class AuthController extends Controller
 {
     /**
      * Authentifie l'utilisateur et retourne les tokens.
@@ -20,10 +21,10 @@ class AuthController extends Controller
     {
         $user = User::where('email', $request->email)->first();
 
-        if (! $user || ! Hash::check($request->password, $user->password)) {
+        if ( ! $user || ! Hash::check($request->password, $user->password)) {
             return $this->responseUnAuthenticated(
                 __('auth.login_failed'),
-                __('auth.unauthenticated')
+                __('auth.unauthenticated'),
             );
         }
 
@@ -48,10 +49,10 @@ class AuthController extends Controller
         $currentToken = $request->bearerToken();
         $token = PersonalAccessToken::findToken($currentToken);
 
-        if (!$token) {
+        if ( ! $token) {
             return $this->responseUnAuthenticated(
                 __('auth.token_invalid'),
-                __('auth.unauthenticated')
+                __('auth.unauthenticated'),
             );
         }
 

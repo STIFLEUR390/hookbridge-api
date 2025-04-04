@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\V1;
 
 use App\Filters\V1\ProjectTargetFilters;
@@ -10,9 +12,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
 
-class ProjectTarget extends Model
+final class ProjectTarget extends Model
 {
-    use HasFactory, Filterable, CascadesDeletes;
+    use CascadesDeletes;
+    use Filterable;
+    use HasFactory;
 
     protected string $default_filters = ProjectTargetFilters::class;
 
@@ -23,10 +27,10 @@ class ProjectTarget extends Model
      */
     protected $fillable = [
         'project_id',
-		'url',
-		'requires_authentication',
-		'secret',
-		'active',
+        'url',
+        'requires_authentication',
+        'secret',
+        'active',
     ];
 
     /**
@@ -38,18 +42,10 @@ class ProjectTarget extends Model
         'deliveryAttempts',
     ];
 
-    protected function casts(): array
+    public function project(): BelongsTo
     {
-        return [
-            'requires_authentication' => 'boolean',
-            'active' => 'boolean',
-        ];
+        return $this->belongsTo(Project::class);
     }
-
-	public function project(): BelongsTo
-	{
-		return $this->belongsTo(Project::class);
-	}
 
     /**
      * Obtenir les tentatives de livraison de la cible.
@@ -57,5 +53,13 @@ class ProjectTarget extends Model
     public function deliveryAttempts(): HasMany
     {
         return $this->hasMany(DeliveryAttempt::class);
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'requires_authentication' => 'boolean',
+            'active' => 'boolean',
+        ];
     }
 }

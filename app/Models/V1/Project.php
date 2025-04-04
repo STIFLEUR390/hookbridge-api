@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\V1;
 
 use App\Enums\ProjectType;
 use App\Filters\V1\ProjectFilters;
-use App\Models\V1\ProjectTarget;
 use Essa\APIToolKit\Filters\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,17 +13,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
 
-class Project extends Model
+final class Project extends Model
 {
-    use HasFactory, Filterable, CascadesDeletes;
-
-    protected string $default_filters = ProjectFilters::class;
+    use CascadesDeletes;
+    use Filterable;
+    use HasFactory;
 
     /**
      * Types de projets disponibles
      */
-    const TYPE_CALLBACK = 'callback';
-    const TYPE_WEBHOOK = 'webhook';
+    public const TYPE_CALLBACK = 'callback';
+    public const TYPE_WEBHOOK = 'webhook';
+
+    protected string $default_filters = ProjectFilters::class;
 
     /**
      * Mass-assignable attributes.
@@ -31,14 +34,14 @@ class Project extends Model
      */
     protected $fillable = [
         'name',
-		'allowed_domain',
-		'allowed_subdomain',
-		'header',
-		'provider_config',
-		'uuid',
-		'active',
-		'user_id',
-		'type',
+        'allowed_domain',
+        'allowed_subdomain',
+        'header',
+        'provider_config',
+        'uuid',
+        'active',
+        'user_id',
+        'type',
     ];
 
     /**
@@ -51,19 +54,10 @@ class Project extends Model
         'incomingRequests',
     ];
 
-    protected function casts(): array
+    public function user(): BelongsTo
     {
-        return [
-            'active' => 'boolean',
-            'provider_config' => 'array',
-            'type' => ProjectType::class,
-        ];
+        return $this->belongsTo(\App\Models\User::class);
     }
-
-	public function user(): BelongsTo
-	{
-		return $this->belongsTo(\App\Models\User::class);
-	}
 
     /**
      * Obtenir les cibles du projet.
@@ -79,5 +73,14 @@ class Project extends Model
     public function incomingRequests(): HasMany
     {
         return $this->hasMany(IncomingRequest::class);
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'active' => 'boolean',
+            'provider_config' => 'array',
+            'type' => ProjectType::class,
+        ];
     }
 }

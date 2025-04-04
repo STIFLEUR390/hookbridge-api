@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
@@ -9,11 +11,11 @@ use App\Http\Resources\V1\ProjectTarget\ProjectTargetResource;
 use App\Models\V1\ProjectTarget;
 use App\Services\V1\ProjectTarget\ProjectTargetService;
 use Dedoc\Scramble\Attributes\Group;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-use Dedoc\Scramble\Attributes\QueryParameter;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 /**
  * Gestion des cibles de projet (webhooks et callbacks)
@@ -24,14 +26,14 @@ use Dedoc\Scramble\Attributes\QueryParameter;
  * @tags Project Targets
  */
 #[Group('Project Targets API', weight: 2)]
-class ProjectTargetController extends Controller
+final class ProjectTargetController extends Controller
 {
-    use AuthorizesRequests, ValidatesRequests;
+    use AuthorizesRequests;
+    use ValidatesRequests;
 
     public function __construct(
-        protected ProjectTargetService $service
-    ) {
-    }
+        protected ProjectTargetService $service,
+    ) {}
 
     /**
      * Liste des cibles de projet
@@ -105,7 +107,7 @@ class ProjectTargetController extends Controller
         return response()->json([
             'status' => 201,
             'message' => __('project_targets.created'),
-            'data' => new ProjectTargetResource($projectTarget)
+            'data' => new ProjectTargetResource($projectTarget),
         ], 201);
     }
 
@@ -162,7 +164,7 @@ class ProjectTargetController extends Controller
         return response()->json([
             'status' => 200,
             'message' => __('project_targets.updated'),
-            'data' => new ProjectTargetResource($projectTarget)
+            'data' => new ProjectTargetResource($projectTarget),
         ]);
     }
 
@@ -183,7 +185,7 @@ class ProjectTargetController extends Controller
 
         return response()->json([
             'status' => 204,
-            'message' => __('project_targets.deleted')
+            'message' => __('project_targets.deleted'),
         ], 204);
     }
 
@@ -197,12 +199,12 @@ class ProjectTargetController extends Controller
     {
         $this->authorize('update', $target);
 
-        $target->update(['active' => !$target->active]);
+        $target->update(['active' => ! $target->active]);
 
         return response()->json([
             'status' => 200,
             'message' => $target->active ? __('project_targets.status_activated') : __('project_targets.status_deactivated'),
-            'data' => new ProjectTargetResource($target)
+            'data' => new ProjectTargetResource($target),
         ]);
     }
 }

@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories\V1;
 
 use App\Models\V1\IncomingRequest;
 use App\Models\V1\Project;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class IncomingRequestFactory extends Factory
+final class IncomingRequestFactory extends Factory
 {
     protected $model = IncomingRequest::class;
 
@@ -17,7 +19,7 @@ class IncomingRequestFactory extends Factory
             'user.updated',
             'order.created',
             'order.paid',
-            'subscription.renewed'
+            'subscription.renewed',
         ];
 
         return [
@@ -49,7 +51,7 @@ class IncomingRequestFactory extends Factory
      */
     public function setNew(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'status' => 'new',
         ]);
     }
@@ -59,7 +61,7 @@ class IncomingRequestFactory extends Factory
      */
     public function processed(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'status' => 'processed',
         ]);
     }
@@ -69,7 +71,7 @@ class IncomingRequestFactory extends Factory
      */
     public function failed(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'status' => 'failed',
         ]);
     }

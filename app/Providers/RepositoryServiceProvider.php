@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use App\Repositories\V1\DeliveryAttempt\DeliveryAttemptRepository;
@@ -12,7 +14,7 @@ use App\Repositories\V1\ProjectTarget\ProjectTargetRepository;
 use App\Repositories\V1\ProjectTarget\ProjectTargetRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
-class RepositoryServiceProvider extends ServiceProvider
+final class RepositoryServiceProvider extends ServiceProvider
 {
     public function register(): void
     {

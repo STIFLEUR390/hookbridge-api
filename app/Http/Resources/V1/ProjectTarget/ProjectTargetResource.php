@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources\V1\ProjectTarget;
 
 use App\Http\Resources\V1\Project\ProjectResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ProjectTargetResource extends JsonResource
+final class ProjectTargetResource extends JsonResource
 {
     /**
      * Transform the resource into an array.

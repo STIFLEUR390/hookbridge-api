@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\V1\ProjectTarget;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateProjectTargetRequest extends FormRequest
+final class UpdateProjectTargetRequest extends FormRequest
 {
     /**
      * Détermine si l'utilisateur est autorisé à faire cette requête.

@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\V1\IncomingRequest;
 use App\Models\V1\Project;
 use App\Models\V1\ProjectTarget;
-use App\Models\V1\IncomingRequest;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use Database\Seeders\V1\DeliveryAttemptSeeder;
+use Illuminate\Database\Seeder;
 
-class DatabaseSeeder extends Seeder
+final class DatabaseSeeder extends Seeder
 {
     /**
      * Seed the application's database.
@@ -29,13 +31,13 @@ class DatabaseSeeder extends Seeder
         // Création de projets de test
         Project::factory(3)
             ->create([
-                'user_id' => $user->id
+                'user_id' => $user->id,
             ])
-            ->each(function ($project) {
+            ->each(function ($project): void {
                 // Création de 2 cibles pour chaque projet
                 ProjectTarget::factory(2)->create([
                     'project_id' => $project->id,
-                    'active' => true
+                    'active' => true,
                 ]);
 
                 // Création de requêtes entrantes pour chaque projet

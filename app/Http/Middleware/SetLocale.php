@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
 use Closure;
@@ -7,12 +9,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Symfony\Component\HttpFoundation\Response;
 
-class SetLocale
+final class SetLocale
 {
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
@@ -20,13 +22,13 @@ class SetLocale
         $locale = $request->header('Accept-Language');
 
         // Si aucune langue n'est spécifiée, utiliser la langue par défaut
-        if (!$locale) {
+        if ( ! $locale) {
             $locale = config('app.locale');
         }
 
         // Vérifier si la langue est supportée
         $supportedLocales = ['en', 'fr'];
-        if (!in_array($locale, $supportedLocales)) {
+        if ( ! in_array($locale, $supportedLocales)) {
             $locale = config('app.locale');
         }
 

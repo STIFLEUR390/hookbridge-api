@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models\V1;
 
 use App\Filters\V1\DeliveryAttemptFilters;
@@ -8,9 +10,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class DeliveryAttempt extends Model
+final class DeliveryAttempt extends Model
 {
-    use HasFactory, Filterable;
+    use Filterable;
+    use HasFactory;
 
     protected string $default_filters = DeliveryAttemptFilters::class;
 
@@ -30,6 +33,16 @@ class DeliveryAttempt extends Model
         'last_attempt_at',
     ];
 
+    public function incomingRequest(): BelongsTo
+    {
+        return $this->belongsTo(IncomingRequest::class);
+    }
+
+    public function projectTarget(): BelongsTo
+    {
+        return $this->belongsTo(ProjectTarget::class);
+    }
+
     /**
      * The attributes that should be cast.
      *
@@ -43,15 +56,5 @@ class DeliveryAttempt extends Model
             'next_attempt_at' => 'datetime',
             'last_attempt_at' => 'datetime',
         ];
-    }
-
-    public function incomingRequest(): BelongsTo
-    {
-        return $this->belongsTo(IncomingRequest::class);
-    }
-
-    public function projectTarget(): BelongsTo
-    {
-        return $this->belongsTo(ProjectTarget::class);
     }
 }

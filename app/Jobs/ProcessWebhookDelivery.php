@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Jobs;
 
 use App\Models\V1\DeliveryAttempt;
 use App\Models\V1\IncomingRequest;
 use App\Models\V1\ProjectTarget;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -14,9 +17,12 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 
-class ProcessWebhookDelivery implements ShouldQueue
+final class ProcessWebhookDelivery implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * Le nombre de fois que le job peut être tenté.
@@ -78,7 +84,7 @@ class ProcessWebhookDelivery implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         // Vérifier si l'utilisateur a dépassé la limite de taux
         $userKey = 'user:' . $this->incomingRequest->project->user_id;
@@ -159,7 +165,7 @@ class ProcessWebhookDelivery implements ShouldQueue
                 'attempt' => $this->attempts(),
                 'status' => $response->status(),
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // En cas d'erreur, mettre à jour la tentative de livraison
             $deliveryAttempt->update([
                 'status' => 'failed',
@@ -184,6 +190,16 @@ class ProcessWebhookDelivery implements ShouldQueue
     }
 
     /**
+     * Déterminer le temps d'attente avant la prochaine tentative.
+     *
+     * @return array
+     */
+    public function backoff()
+    {
+        return [$this->backoff];
+    }
+
+    /**
      * Formater les données du webhook.
      *
      * @return array
@@ -193,7 +209,7 @@ class ProcessWebhookDelivery implements ShouldQueue
         $payload = $this->incomingRequest->payload;
 
         // Vérifier si le payload contient déjà les champs requis
-        if (isset($payload['event']) && isset($payload['data'])) {
+        if (isset($payload['event'], $payload['data'])) {
             return $payload;
         }
 
@@ -204,7 +220,7 @@ class ProcessWebhookDelivery implements ShouldQueue
         // Si le payload est une chaîne, essayer de le décoder
         if (is_string($payload)) {
             $decoded = json_decode($payload, true);
-            if (json_last_error() === JSON_ERROR_NONE) {
+            if (JSON_ERROR_NONE === json_last_error()) {
                 $data = $decoded;
             }
         }
@@ -215,15 +231,5 @@ class ProcessWebhookDelivery implements ShouldQueue
             'data' => $data,
             'timestamp' => now()->toIso8601String(),
         ];
-    }
-
-    /**
-     * Déterminer le temps d'attente avant la prochaine tentative.
-     *
-     * @return array
-     */
-    public function backoff()
-    {
-        return [$this->backoff];
     }
 }

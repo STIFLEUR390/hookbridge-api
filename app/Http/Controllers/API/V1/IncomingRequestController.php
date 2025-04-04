@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
@@ -9,11 +11,11 @@ use App\Http\Resources\V1\IncomingRequest\IncomingRequestResource;
 use App\Models\V1\IncomingRequest;
 use App\Services\V1\IncomingRequest\IncomingRequestService;
 use Dedoc\Scramble\Attributes\Group;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-use Dedoc\Scramble\Attributes\QueryParameter;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 /**
  * Gestion des requêtes entrantes
@@ -24,14 +26,14 @@ use Dedoc\Scramble\Attributes\QueryParameter;
  * @tags Incoming Requests
  */
 #[Group('Incoming Requests API', weight: 3)]
-class IncomingRequestController extends Controller
+final class IncomingRequestController extends Controller
 {
-    use AuthorizesRequests, ValidatesRequests;
+    use AuthorizesRequests;
+    use ValidatesRequests;
 
     public function __construct(
-        protected IncomingRequestService $service
-    ) {
-    }
+        protected IncomingRequestService $service,
+    ) {}
 
     /**
      * Liste des requêtes entrantes
@@ -186,7 +188,7 @@ class IncomingRequestController extends Controller
 
         return response()->json([
             'status' => 204,
-            'message' => __('incoming_requests.deleted')
+            'message' => __('incoming_requests.deleted'),
         ], 204);
     }
 }

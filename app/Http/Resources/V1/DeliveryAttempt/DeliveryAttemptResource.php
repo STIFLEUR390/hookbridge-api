@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources\V1\DeliveryAttempt;
 
 use App\Http\Resources\V1\IncomingRequest\IncomingRequestResource;
@@ -7,7 +9,7 @@ use App\Http\Resources\V1\ProjectTarget\ProjectTargetResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class DeliveryAttemptResource extends JsonResource
+final class DeliveryAttemptResource extends JsonResource
 {
     public function toArray(Request $request): array
     {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
@@ -9,11 +11,11 @@ use App\Http\Resources\V1\DeliveryAttempt\DeliveryAttemptResource;
 use App\Models\V1\DeliveryAttempt;
 use App\Services\V1\DeliveryAttempt\DeliveryAttemptService;
 use Dedoc\Scramble\Attributes\Group;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-use Dedoc\Scramble\Attributes\QueryParameter;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 /**
  * Gestion des tentatives de livraison
@@ -24,14 +26,14 @@ use Dedoc\Scramble\Attributes\QueryParameter;
  * @tags Delivery Attempts
  */
 #[Group('Delivery Attempts API', weight: 4)]
-class DeliveryAttemptController extends Controller
+final class DeliveryAttemptController extends Controller
 {
-    use AuthorizesRequests, ValidatesRequests;
+    use AuthorizesRequests;
+    use ValidatesRequests;
 
     public function __construct(
-        protected DeliveryAttemptService $service
-    ) {
-    }
+        protected DeliveryAttemptService $service,
+    ) {}
 
     /**
      * Liste des tentatives de livraison
@@ -187,7 +189,7 @@ class DeliveryAttemptController extends Controller
 
         return response()->json([
             'status' => 204,
-            'message' => __('delivery_attempts.deleted')
+            'message' => __('delivery_attempts.deleted'),
         ], 204);
     }
 }

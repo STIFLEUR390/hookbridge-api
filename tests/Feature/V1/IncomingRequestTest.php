@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\V1;
 
-use Tests\TestCase;
 use App\Models\User;
 use App\Models\V1\IncomingRequest;
 use App\Models\V1\Project;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
-class IncomingRequestTest extends TestCase
+final class IncomingRequestTest extends TestCase
 {
     use  RefreshDatabase;
 
@@ -29,8 +31,8 @@ class IncomingRequestTest extends TestCase
         $payload = IncomingRequest::factory()->make([])->toArray();
 
         $this->json('POST', $this->endpoint, $payload)
-             ->assertStatus(201)
-             ->assertSee($payload['name']);
+            ->assertStatus(201)
+            ->assertSee($payload['name']);
 
         $this->assertDatabaseHas($this->tableName, ['id' => 1]);
     }
@@ -44,9 +46,9 @@ class IncomingRequestTest extends TestCase
         IncomingRequest::factory(5)->create();
 
         $this->json('GET', $this->endpoint)
-             ->assertStatus(200)
-             ->assertJsonCount(5, 'data')
-             ->assertSee(IncomingRequest::find(rand(1, 5))->name);
+            ->assertStatus(200)
+            ->assertJsonCount(5, 'data')
+            ->assertSee(IncomingRequest::find(rand(1, 5))->name);
     }
 
     public function testViewAllIncomingRequestsByFooFilter(): void
@@ -57,10 +59,10 @@ class IncomingRequestTest extends TestCase
 
         IncomingRequest::factory(5)->create();
 
-        $this->json('GET', $this->endpoint.'?foo=1')
-             ->assertStatus(200)
-             ->assertSee('foo')
-             ->assertDontSee('foo');
+        $this->json('GET', $this->endpoint . '?foo=1')
+            ->assertStatus(200)
+            ->assertSee('foo')
+            ->assertDontSee('foo');
     }
 
     public function testsCreateIncomingRequestValidation(): void
@@ -73,7 +75,7 @@ class IncomingRequestTest extends TestCase
         ];
 
         $this->json('post', $this->endpoint, $data)
-             ->assertStatus(422);
+            ->assertStatus(422);
     }
 
     public function testViewIncomingRequestData(): void
@@ -84,9 +86,9 @@ class IncomingRequestTest extends TestCase
 
         IncomingRequest::factory()->create();
 
-        $this->json('GET', $this->endpoint.'/1')
-             ->assertSee(IncomingRequest::first()->name)
-             ->assertStatus(200);
+        $this->json('GET', $this->endpoint . '/1')
+            ->assertSee(IncomingRequest::first()->name)
+            ->assertStatus(200);
     }
 
     public function testUpdateIncomingRequest(): void
@@ -98,12 +100,12 @@ class IncomingRequestTest extends TestCase
         IncomingRequest::factory()->create();
 
         $payload = [
-            'name' => 'Random'
+            'name' => 'Random',
         ];
 
-        $this->json('PUT', $this->endpoint.'/1', $payload)
-             ->assertStatus(200)
-             ->assertSee($payload['name']);
+        $this->json('PUT', $this->endpoint . '/1', $payload)
+            ->assertStatus(200)
+            ->assertSee($payload['name']);
     }
 
     public function testDeleteIncomingRequest(): void
@@ -114,8 +116,8 @@ class IncomingRequestTest extends TestCase
 
         IncomingRequest::factory()->create();
 
-        $this->json('DELETE', $this->endpoint.'/1')
-             ->assertStatus(204);
+        $this->json('DELETE', $this->endpoint . '/1')
+            ->assertStatus(204);
 
         $this->assertEquals(0, IncomingRequest::count());
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
@@ -10,7 +12,7 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
-class PasswordResetController extends Controller
+final class PasswordResetController extends Controller
 {
     /**
      * Envoyer un lien de réinitialisation de mot de passe.
@@ -22,13 +24,13 @@ class PasswordResetController extends Controller
         ]);
 
         $status = Password::sendResetLink(
-            $request->only('email')
+            $request->only('email'),
         );
 
-        if ($status === Password::RESET_LINK_SENT) {
+        if (Password::RESET_LINK_SENT === $status) {
             return $this->responseSuccess(
                 __('passwords.sent'),
-                ['message' => __('passwords.sent')]
+                ['message' => __('passwords.sent')],
             );
         }
 
@@ -50,19 +52,19 @@ class PasswordResetController extends Controller
 
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
-            function ($user, $password) {
+            function ($user, $password): void {
                 $user->forceFill([
-                    'password' => Hash::make($password)
+                    'password' => Hash::make($password),
                 ])->setRememberToken(Str::random(60));
 
                 $user->save();
-            }
+            },
         );
 
-        if ($status === Password::PASSWORD_RESET) {
+        if (Password::PASSWORD_RESET === $status) {
             return $this->responseSuccess(
                 __('passwords.reset'),
-                ['message' => __('passwords.reset')]
+                ['message' => __('passwords.reset')],
             );
         }
 

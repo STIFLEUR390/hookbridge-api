@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\V1\IncomingRequest;
 
 use App\Models\V1\IncomingRequest;
 use App\Repositories\V1\IncomingRequest\IncomingRequestRepositoryInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-class IncomingRequestService
+final class IncomingRequestService
 {
     public function __construct(
-        protected IncomingRequestRepositoryInterface $repository
-    ) {
-    }
+        protected IncomingRequestRepositoryInterface $repository,
+    ) {}
 
     public function getAll(array $filters = []): LengthAwarePaginator
     {

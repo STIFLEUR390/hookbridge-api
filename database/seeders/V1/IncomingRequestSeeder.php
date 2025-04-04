@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders\V1;
 
 use App\Models\V1\IncomingRequest;
 use Illuminate\Database\Seeder;
 
-class IncomingRequestSeeder extends Seeder
+final class IncomingRequestSeeder extends Seeder
 {
     /**
      * Run the database seeds.
