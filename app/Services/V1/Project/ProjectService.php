@@ -5,6 +5,7 @@ namespace App\Services\V1\Project;
 use App\Models\V1\Project;
 use App\Repositories\V1\Project\ProjectRepositoryInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Str;
 
 class ProjectService
 {
@@ -25,6 +26,8 @@ class ProjectService
 
     public function create(array $data): Project
     {
+        $data['uuid'] = Str::uuid()->toString();
+        $data['user_id'] = auth()->id();
         return $this->repository->create($data);
     }
 

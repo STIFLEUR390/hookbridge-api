@@ -22,6 +22,7 @@ class HookController extends Controller
 
     /**
      * Gère les callbacks entrants pour un projet spécifique.
+     * Les callbacks n'acceptent que les requêtes GET et ne nécessitent pas de validation.
      *
      * @param Request $request
      * @param string $uuid
@@ -29,11 +30,16 @@ class HookController extends Controller
      */
     public function handleCallback(Request $request, $uuid)
     {
+        // Vérifier que la méthode est GET
+        if ($request->method() !== 'GET') {
+            return response()->json([
+                'status' => 405,
+                'message' => 'Méthode non autorisée. Les callbacks n\'acceptent que les requêtes GET.'
+            ], 405);
+        }
+
         // Récupérer le projet grâce au uuid
         $project = Project::where('uuid', $uuid)->firstOrFail();
-
-        // Valider la requête en fonction du projet
-        $this->validateRequest($request, $project);
 
         // Enregistrer la requête entrante
         $incomingRequest = IncomingRequest::create([
@@ -78,6 +84,7 @@ class HookController extends Controller
 
     /**
      * Gère les webhooks entrants pour un projet spécifique.
+     * Les webhooks n'acceptent que les requêtes POST et nécessitent une validation.
      *
      * @param Request $request
      * @param string $uuid
@@ -85,6 +92,14 @@ class HookController extends Controller
      */
     public function handleWebhook(Request $request, $uuid)
     {
+        // Vérifier que la méthode est POST
+        if ($request->method() !== 'POST') {
+            return response()->json([
+                'status' => 405,
+                'message' => 'Méthode non autorisée. Les webhooks n\'acceptent que les requêtes POST.'
+            ], 405);
+        }
+
         // Récupérer le projet grâce au uuid
         $project = Project::where('uuid', $uuid)->firstOrFail();
 
@@ -143,7 +158,7 @@ class HookController extends Controller
     {
         // Vérifier si le domaine est autorisé
         if ($project->allowed_domain) {
-            $host = $request->header('Host');
+            $host = $request->host();
             if (!$host || !str_contains($host, $project->allowed_domain)) {
                 abort(403, 'Domaine non autorisé');
             }
@@ -151,7 +166,7 @@ class HookController extends Controller
 
         // Vérifier si le sous-domaine est autorisé
         if ($project->allowed_subdomain) {
-            $host = $request->header('Host');
+            $host = $host = $request->host();
             if (!$host || !str_contains($host, $project->allowed_subdomain)) {
                 abort(403, 'Sous-domaine non autorisé');
             }
@@ -160,15 +175,13 @@ class HookController extends Controller
         // Vérifier la signature si configurée dans le projet
         if (isset($project->provider_config['require_signature']) && $project->provider_config['require_signature']) {
             $signature = $request->header('verif-hash');
+            $secretHash = $project->provider_config['require_signature'];
 
             if (!$signature) {
                 abort(401, 'Signature manquante');
             }
 
-            // Vérifier la signature avec une fenêtre temporelle
-            $isValid = $this->validateSignatureWithTimeWindow($signature, $project);
-
-            if (!$isValid) {
+            if (!$signature || ($signature !== $secretHash)) {
                 Log::warning('Signature invalide', [
                     'project_id' => $project->id,
                     'signature' => $signature,
@@ -184,32 +197,5 @@ class HookController extends Controller
         if (!$project->active) {
             abort(403, 'Projet inactif');
         }
-    }
-
-    /**
-     * Valide la signature avec une fenêtre temporelle.
-     *
-     * @param string $signature
-     * @param Project $project
-     * @return bool
-     */
-    private function validateSignatureWithTimeWindow($signature, Project $project)
-    {
-        // Créer une fenêtre temporelle (avant et après l'heure actuelle)
-        $now = Carbon::now();
-        $windowStart = $now->copy()->subMinutes($this->signatureTimeWindow);
-        $windowEnd = $now->copy()->addMinutes($this->signatureTimeWindow);
-
-        // Vérifier la signature pour chaque minute dans la fenêtre
-        for ($time = $windowStart; $time <= $windowEnd; $time->addMinute()) {
-            $timeString = $time->format('Y-m-d H:i:00'); // Arrondir à la minute
-            $secretHash = hash('sha256', $project->name . $project->id . $timeString);
-
-            if (hash_equals($signature, $secretHash)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

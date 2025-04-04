@@ -26,7 +26,7 @@ class UpdatePasswordRequest extends FormRequest
         return [
             'current_password' => ['required', 'string', function ($attribute, $value, $fail) {
                 if (!Hash::check($value, $this->user()->password)) {
-                    $fail('Le mot de passe actuel est incorrect.');
+                    $fail(__('auth.current_password_incorrect'));
                 }
             }],
             'password' => ['required', 'string', 'confirmed', Password::defaults()],
@@ -41,10 +41,10 @@ class UpdatePasswordRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'current_password.required' => 'Le mot de passe actuel est requis.',
-            'password.required' => 'Le nouveau mot de passe est requis.',
-            'password.confirmed' => 'La confirmation du mot de passe ne correspond pas.',
-            'password.min' => 'Le mot de passe doit contenir au moins 8 caractères.',
+            'current_password.required' => __('auth.current_password_required'),
+            'password.required' => __('auth.password_required'),
+            'password.confirmed' => __('auth.password_confirmed'),
+            'password.min' => __('auth.password_min'),
         ];
     }
 }

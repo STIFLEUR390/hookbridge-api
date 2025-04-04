@@ -2,6 +2,7 @@
 
 namespace Database\Factories\V1;
 
+use App\Enums\ProjectType;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -17,6 +18,7 @@ class ProjectFactory extends Factory
             'provider_config' => json_encode(['key' => $this->faker->password()]),
             'uuid' => $this->faker->uuid(),
             'active' => true,
+            'type' => $this->faker->randomElement(ProjectType::cases())->value,
             'user_id' => User::factory(),
         ];
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\V1\Project;
 
+use App\Enums\ProjectType;
 use App\Http\Resources\V1\User\UserResource;
 use App\Http\Resources\V1\ProjectTarget\ProjectTargetResource;
 use Illuminate\Http\Request;
@@ -25,11 +26,13 @@ class ProjectResource extends JsonResource
             'provider_config' => $this->provider_config,
             'uuid' => $this->uuid,
             'active' => $this->active,
+            'type' => $this->type->value,
             'user' => $this->whenLoaded('user', fn() => new UserResource($this->user)),
-            'targets' => $this->whenLoaded('targets', fn() => ProjectTargetResource::collection($this->targets)),
+            'projectTargets' => $this->whenLoaded('projectTargets', fn() => ProjectTargetResource::collection($this->projectTargets)),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'status' => $this->active ? 'actif' : 'inactif',
+            'url_callback' => $this->type === ProjectType::CALLBACK->value ? route('hook.callback', ['uuid' => $this->uuid]) : route('hook.webhook', ['uuid' => $this->uuid]),
             'domain_url' => $this->allowed_subdomain ?? "https://{$this->allowed_domain}",
         ];
     }

@@ -31,9 +31,9 @@ class LoginRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'email.required' => __('api.validation.required', ['attribute' => 'email']),
-            'email.email' => __('api.validation.email', ['attribute' => 'email']),
-            'password.required' => __('api.validation.required', ['attribute' => 'password']),
+            'email.required' => __('auth.email_required'),
+            'email.email' => __('auth.email_invalid'),
+            'password.required' => __('auth.password_required'),
         ];
     }
 }

@@ -18,6 +18,7 @@ class ProjectFilters extends QueryFilters
         'provider_config',
         'uuid',
         'active',
+        'type',
         'user_id',
         'created_at',
         'updated_at',
@@ -30,6 +31,7 @@ class ProjectFilters extends QueryFilters
         'allowed_subdomain',
         'header',
         'uuid',
+        'type',
     ];
 
     protected array $allowedSorts = [
@@ -38,6 +40,7 @@ class ProjectFilters extends QueryFilters
         'allowed_domain',
         'allowed_subdomain',
         'active',
+        'type',
         'user_id',
         'created_at',
         'updated_at',

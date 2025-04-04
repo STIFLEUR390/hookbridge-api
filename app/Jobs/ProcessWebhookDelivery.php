@@ -122,7 +122,7 @@ class ProcessWebhookDelivery implements ShouldQueue
             // Envoyer le webhook
             $response = Http::withHeaders($this->projectTarget->headers ?? [])
                 ->timeout(30)
-                ->post($this->projectTarget->url, $webhookData);
+                ->post($this->projectTarget->url, $webhookData)->json();
 
             // Mettre à jour la tentative de livraison
             $deliveryAttempt->update([

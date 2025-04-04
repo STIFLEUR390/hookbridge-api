@@ -42,12 +42,12 @@ class UpdateProfileRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.string' => 'Le nom doit être une chaîne de caractères.',
-            'name.max' => 'Le nom ne peut pas dépasser 255 caractères.',
-            'email.string' => 'L\'email doit être une chaîne de caractères.',
-            'email.email' => 'L\'email doit être une adresse email valide.',
-            'email.max' => 'L\'email ne peut pas dépasser 255 caractères.',
-            'email.unique' => 'Cette adresse email est déjà utilisée.',
+            'name.string' => __('auth.name_string'),
+            'name.max' => __('auth.name_max'),
+            'email.string' => __('auth.email_string'),
+            'email.email' => __('auth.email_invalid'),
+            'email.max' => __('auth.email_max'),
+            'email.unique' => __('auth.email_taken'),
         ];
     }
 }

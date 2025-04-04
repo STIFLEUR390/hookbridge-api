@@ -13,13 +13,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('deliveryAttempts', function (Blueprint $table) {
+        Schema::create('delivery_attempts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('incoming_request_id')->constrained('incoming_requests');
 			$table->foreignId('project_target_id')->constrained('project_targets');
-			$table->integer('attempt_count')->default(0)->comment('Nombre de tentatives de livraison');
+			$table->unsignedInteger('attempt_count')->default(0)->comment('Nombre de tentatives de livraison');
 			$table->enum('status', ['pending', 'in_progress', 'success', 'failed'])->comment('Statut de la tentative de livraison');
-			$table->interger('response_code')->nullable()->comment('Code de réponse HTTP');
+			$table->unsignedInteger('response_code')->nullable()->comment('Code de réponse HTTP');
 			$table->text('response_body')->nullable()->comment('Corps de la réponse HTTP');
 			$table->timestamp('next_attempt_at')->nullable()->comment('Date de la prochaine tentative de livraison');
 			$table->timestamp('last_attempt_at')->nullable()->comment('Date de la dernière tentative de livraison');

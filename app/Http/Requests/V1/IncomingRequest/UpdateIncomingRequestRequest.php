@@ -21,8 +21,8 @@ class UpdateIncomingRequestRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'type' => ['sometimes', 'string', Rule::in(['webhook', 'callback'])],
-            'http_method' => ['sometimes', 'string', Rule::in(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'])],
+            'type' => ['sometimes', 'string', Rule::in(['callback', 'webhook'])],
+            'http_method' => ['sometimes', 'string', Rule::in(['GET', 'POST'])],
             'headers' => ['nullable', 'array'],
             'payload' => ['nullable', 'array'],
             'status' => ['sometimes', 'string', Rule::in(['new', 'processing', 'processed', 'failed'])],

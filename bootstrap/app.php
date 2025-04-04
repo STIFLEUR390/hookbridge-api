@@ -19,6 +19,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'validate.project.uuid' => \App\Http\Middleware\ValidateProjectUuid::class
         ]);
+        $middleware->validateCsrfTokens(except: [
+            'hook/*',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

@@ -21,11 +21,12 @@ class UpdateDeliveryAttemptRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => ['sometimes', 'string', Rule::in(['pending', 'success', 'failed'])],
+            'attempt_count' => ['sometimes', 'integer', 'min:0'],
+            'status' => ['sometimes', 'string', Rule::in(['pending', 'in_progress', 'success', 'failed'])],
             'response_code' => ['nullable', 'integer', 'min:100', 'max:599'],
             'response_body' => ['nullable', 'string'],
-            'error_message' => ['nullable', 'string', 'max:1000'],
-            'attempted_at' => ['sometimes', 'date'],
+            'next_attempt_at' => ['nullable', 'date'],
+            'last_attempt_at' => ['nullable', 'date'],
         ];
     }
 
@@ -35,15 +36,16 @@ class UpdateDeliveryAttemptRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'attempt_count.integer' => __('api.validation.integer', ['attribute' => __('delivery_attempts.attributes.attempt_count')]),
+            'attempt_count.min' => __('api.validation.min', ['attribute' => __('delivery_attempts.attributes.attempt_count'), 'min' => 0]),
             'status.string' => __('api.validation.string', ['attribute' => __('delivery_attempts.attributes.status')]),
             'status.in' => __('api.validation.in', ['attribute' => __('delivery_attempts.attributes.status')]),
             'response_code.integer' => __('api.validation.integer', ['attribute' => __('delivery_attempts.attributes.response_code')]),
-            'response_code.min' => __('api.min', ['attribute' => __('delivery_attempts.attributes.response_code'), 'min' => 100]),
-            'response_code.max' => __('api.max', ['attribute' => __('delivery_attempts.attributes.response_code'), 'max' => 599]),
+            'response_code.min' => __('api.validation.min', ['attribute' => __('delivery_attempts.attributes.response_code'), 'min' => 100]),
+            'response_code.max' => __('api.validation.max', ['attribute' => __('delivery_attempts.attributes.response_code'), 'max' => 599]),
             'response_body.string' => __('api.validation.string', ['attribute' => __('delivery_attempts.attributes.response_body')]),
-            'error_message.string' => __('api.validation.string', ['attribute' => __('delivery_attempts.attributes.error_message')]),
-            'error_message.max' => __('api.max', ['attribute' => __('delivery_attempts.attributes.error_message'), 'max' => 1000]),
-            'attempted_at.date' => __('api.validation.date', ['attribute' => __('delivery_attempts.attributes.attempted_at')]),
+            'next_attempt_at.date' => __('api.validation.date', ['attribute' => __('delivery_attempts.attributes.next_attempt_at')]),
+            'last_attempt_at.date' => __('api.validation.date', ['attribute' => __('delivery_attempts.attributes.last_attempt_at')]),
         ];
     }
 }

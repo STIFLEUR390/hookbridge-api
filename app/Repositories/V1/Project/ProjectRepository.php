@@ -14,7 +14,7 @@ class ProjectRepository implements ProjectRepositoryInterface
     public function getAll(array $filters = []): LengthAwarePaginator
     {
         return $this->model
-            ->with(['targets'])
+            ->where('user_id', auth()->id())
             ->useFilters()
             ->dynamicPaginate();
     }
@@ -22,20 +22,19 @@ class ProjectRepository implements ProjectRepositoryInterface
     public function findById(int $id): ?Project
     {
         return $this->model
-            ->with(['targets'])
             ->find($id);
     }
 
     public function create(array $data): Project
     {
         $project = $this->model->create($data);
-        return $project->load(['targets']);
+        return $project;
     }
 
     public function update(Project $project, array $data): Project
     {
         $project->update($data);
-        return $project->load(['targets']);
+        return $project;
     }
 
     public function delete(Project $project): bool

@@ -2,6 +2,7 @@
 
 namespace App\Models\V1;
 
+use App\Enums\ProjectType;
 use App\Filters\V1\ProjectFilters;
 use App\Models\V1\ProjectTarget;
 use Essa\APIToolKit\Filters\Filterable;
@@ -18,6 +19,12 @@ class Project extends Model
     protected string $default_filters = ProjectFilters::class;
 
     /**
+     * Types de projets disponibles
+     */
+    const TYPE_CALLBACK = 'callback';
+    const TYPE_WEBHOOK = 'webhook';
+
+    /**
      * Mass-assignable attributes.
      *
      * @var array
@@ -31,6 +38,7 @@ class Project extends Model
 		'uuid',
 		'active',
 		'user_id',
+		'type',
     ];
 
     /**
@@ -48,6 +56,7 @@ class Project extends Model
         return [
             'active' => 'boolean',
             'provider_config' => 'array',
+            'type' => ProjectType::class,
         ];
     }
 
