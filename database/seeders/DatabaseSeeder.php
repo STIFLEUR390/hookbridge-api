@@ -21,12 +21,18 @@ final class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
+        $this->call([
+            RoleAndPermissionSeeder::class,
+            AdminUserSeeder::class,
+        ]);
+
         // Création d'un utilisateur de test
         $user = User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => bcrypt('password'),
         ]);
+        $user->assignRole('user');
 
         // Création de projets de test
         Project::factory(3)

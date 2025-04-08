@@ -6,7 +6,7 @@ use App\Http\Controllers\API\V1\HookController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/docs/api');
-
+Route::mailPreview();
 
 /*===========================
 =           Webhooks           =

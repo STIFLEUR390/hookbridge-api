@@ -5,7 +5,9 @@ declare(strict_types=1);
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\V1\HookController;
 use App\Http\Controllers\API\V1\PasswordResetController;
+use App\Http\Controllers\API\V1\PermissionController;
 use App\Http\Controllers\API\V1\ProfileController;
+use App\Http\Controllers\API\V1\RoleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,7 +24,7 @@ Route::prefix('auth')->group(function (): void {
 });
 
 // Routes protégées
-Route::middleware('auth:sanctum')->group(function (): void {
+Route::middleware(['auth:sanctum'])->group(function (): void {
     Route::get('/user', fn(Request $request) => $request->user());
 
     // Routes du profil utilisateur
@@ -32,17 +34,45 @@ Route::middleware('auth:sanctum')->group(function (): void {
         Route::put('/password', [ProfileController::class, 'updatePassword']);
     });
 
-    Route::apiResource('/projects', App\Http\Controllers\API\V1\ProjectController::class);
-    Route::patch('/projects/{project}/toggle-status', [App\Http\Controllers\API\V1\ProjectController::class, 'toggleStatus']);
+    // Routes des rôles
+    Route::middleware(['permission:view roles'])->group(function (): void {
+        Route::apiResource('/roles', RoleController::class)->only(['index', 'show']);
+        Route::post('/roles', [RoleController::class, 'store'])->middleware('permission:create roles');
+        Route::put('/roles/{role}', [RoleController::class, 'update'])->middleware('permission:edit roles');
+        Route::delete('/roles/{role}', [RoleController::class, 'destroy'])->middleware('permission:delete roles');
+    });
 
-    Route::apiResource('/project-targets', App\Http\Controllers\API\V1\ProjectTargetController::class);
-    Route::patch('/project-targets/{target}/toggle-status', [App\Http\Controllers\API\V1\ProjectTargetController::class, 'toggleStatus']);
+    // Routes des permissions
+    Route::middleware(['permission:view permissions'])->group(function (): void {
+        Route::apiResource('/permissions', PermissionController::class)->only(['index', 'show']);
+        Route::post('/permissions', [PermissionController::class, 'store'])->middleware('permission:create permissions');
+        Route::put('/permissions/{permission}', [PermissionController::class, 'update'])->middleware('permission:edit permissions');
+        Route::delete('/permissions/{permission}', [PermissionController::class, 'destroy'])->middleware('permission:delete permissions');
+    });
 
-    Route::apiResource('/incoming-requests', App\Http\Controllers\API\V1\IncomingRequestController::class)->only(['index', 'show']);
+    // Routes des projets
+    Route::middleware(['permission:view projects'])->group(function (): void {
+        Route::apiResource('/projects', App\Http\Controllers\API\V1\ProjectController::class);
+        Route::patch('/projects/{project}/toggle-status', [App\Http\Controllers\API\V1\ProjectController::class, 'toggleStatus'])
+            ->middleware('permission:edit projects');
+    });
 
-    // Route pour réessayer l'envoi d'un webhook
-    Route::post('/incoming-requests/{incomingRequest}/retry', [HookController::class, 'retrySendingWebhook']);
+    // Routes des cibles de projet
+    Route::middleware(['permission:view project targets'])->group(function (): void {
+        Route::apiResource('/project-targets', App\Http\Controllers\API\V1\ProjectTargetController::class);
+        Route::patch('/project-targets/{target}/toggle-status', [App\Http\Controllers\API\V1\ProjectTargetController::class, 'toggleStatus'])
+            ->middleware('permission:edit project targets');
+    });
 
-    Route::apiResource('/deliveryAttempts', App\Http\Controllers\API\V1\DeliveryAttemptController::class)->only(['index', 'show']);
+    // Routes des requêtes entrantes
+    Route::middleware(['permission:view incoming requests'])->group(function (): void {
+        Route::apiResource('/incoming-requests', App\Http\Controllers\API\V1\IncomingRequestController::class)->only(['index', 'show']);
+        Route::post('/incoming-requests/{incomingRequest}/retry', [HookController::class, 'retrySendingWebhook'])
+            ->middleware('permission:edit incoming requests');
+    });
 
+    // Routes des tentatives de livraison
+    Route::middleware(['permission:view delivery attempts'])->group(function (): void {
+        Route::apiResource('/deliveryAttempts', App\Http\Controllers\API\V1\DeliveryAttemptController::class)->only(['index', 'show']);
+    });
 });

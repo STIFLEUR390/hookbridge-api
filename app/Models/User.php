@@ -13,12 +13,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
+use Spatie\Permission\Traits\HasRoles;
 
 final class User extends Authenticatable
 {
     use CascadesDeletes;
     use HasApiTokens;/** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
+    use HasRoles;
     use Notifiable;
 
     /**

@@ -17,6 +17,11 @@
     "Assign": "Assign",
     "Associate": "Associate",
     "Attach": "Attach",
+    "auth": {
+        "failed": "These credentials do not match our records.",
+        "password": "The provided password is incorrect.",
+        "throttle": "Too many login attempts. Please try again in :seconds seconds."
+    },
     "auth.current_password_incorrect": "The current password is incorrect",
     "auth.current_password_required": "The current password is required",
     "auth.email_invalid": "The email address is invalid",
@@ -58,6 +63,12 @@
     "Created": "Created",
     "Delete": "Delete",
     "Delete :name": "Delete :name",
+    "delivery_attempts": {
+        "created": "Delivery attempt created successfully",
+        "deleted": "Delivery attempt deleted successfully",
+        "not_found": "Delivery attempt not found",
+        "updated": "Delivery attempt updated successfully"
+    },
     "delivery_attempts.attributes.attempted_at": "attempted at",
     "delivery_attempts.attributes.error_message": "error message",
     "delivery_attempts.attributes.incoming_request_id": "incoming request",
@@ -118,6 +129,23 @@
     "Impersonation": "Impersonation",
     "Import": "Import",
     "Import :name": "Import :name",
+    "incoming_requests": {
+        "created": "Incoming request created successfully",
+        "deleted": "Incoming request deleted successfully",
+        "inactive_project": "Inactive project",
+        "invalid_signature": "Invalid signature",
+        "missing_signature": "Missing signature",
+        "no_active_targets": "No active targets found for this project",
+        "not_found": "Incoming request not found",
+        "processing": "This request is already being processed",
+        "project_inactive": "The project associated with this request does not exist or is inactive",
+        "test_webhook_received": "Test webhook received successfully",
+        "unauthorized_domain": "Unauthorized domain",
+        "unauthorized_subdomain": "Unauthorized subdomain",
+        "updated": "Incoming request updated successfully",
+        "webhook_received": "Webhook received successfully",
+        "webhook_retried": "Webhook retried successfully"
+    },
     "incoming_requests.attributes.headers": "headers",
     "incoming_requests.attributes.http_method": "HTTP method",
     "incoming_requests.attributes.payload": "payload",
@@ -201,6 +229,14 @@
     "profile.password_updated_successfully": "Password updated successfully",
     "profile.retrieved_successfully": "Profile retrieved successfully",
     "profile.updated_successfully": "Profile updated successfully",
+    "projects": {
+        "created": "Project created successfully",
+        "deleted": "Project deleted successfully",
+        "not_found": "Project not found",
+        "status_activated": "Project activated successfully",
+        "status_deactivated": "Project deactivated successfully",
+        "updated": "Project updated successfully"
+    },
     "projects.created": "Project created successfully",
     "projects.deleted": "Project deleted successfully",
     "projects.not_found": "Project not found",
@@ -285,41 +321,5 @@
     "Web Server is Down": "Web Server is Down",
     "Whoops!": "Whoops!",
     "Yes": "Yes",
-    "You are receiving this email because we received a password reset request for your account.": "You are receiving this email because we received a password reset request for your account.",
-    "auth": {
-        "failed": "These credentials do not match our records.",
-        "password": "The provided password is incorrect.",
-        "throttle": "Too many login attempts. Please try again in :seconds seconds."
-    },
-    "projects": {
-        "created": "Project created successfully",
-        "deleted": "Project deleted successfully",
-        "not_found": "Project not found",
-        "status_activated": "Project activated successfully",
-        "status_deactivated": "Project deactivated successfully",
-        "updated": "Project updated successfully"
-    },
-    "delivery_attempts": {
-        "created": "Delivery attempt created successfully",
-        "deleted": "Delivery attempt deleted successfully",
-        "not_found": "Delivery attempt not found",
-        "updated": "Delivery attempt updated successfully"
-    },
-    "incoming_requests": {
-        "created": "Incoming request created successfully",
-        "deleted": "Incoming request deleted successfully",
-        "not_found": "Incoming request not found",
-        "updated": "Incoming request updated successfully",
-        "processing": "This request is already being processed",
-        "project_inactive": "The project associated with this request does not exist or is inactive",
-        "no_active_targets": "No active targets found for this project",
-        "webhook_received": "Webhook received successfully",
-        "webhook_retried": "Webhook retried successfully",
-        "test_webhook_received": "Test webhook received successfully",
-        "unauthorized_domain": "Unauthorized domain",
-        "unauthorized_subdomain": "Unauthorized subdomain",
-        "missing_signature": "Missing signature",
-        "invalid_signature": "Invalid signature",
-        "inactive_project": "Inactive project"
-    }
+    "You are receiving this email because we received a password reset request for your account.": "You are receiving this email because we received a password reset request for your account."
 }
