@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schedule;
 
 // Commande pour démarrer le worker de queue
 Artisan::command('queue:start', function (): void {
@@ -40,3 +41,5 @@ Artisan::command('backup:run', function (): void {
     $this->info('Sauvegarde en cours...');
     $this->call('backup:run');
 })->dailyAt('02:00');
+
+Schedule::command('sanctum:prune-expired --hours=24')->daily();

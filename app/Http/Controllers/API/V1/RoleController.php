@@ -31,34 +31,7 @@ final class RoleController extends Controller
      * @queryParam page int Numéro de page
      * @queryParam per_page int Nombre d'éléments par page
      *
-     * @response 200 {
-     *   "data": [
-     *     {
-     *       "id": 1,
-     *       "name": "admin",
-     *       "guard_name": "web",
-     *       "permissions": [
-     *         {
-     *           "id": 1,
-     *           "name": "view projects",
-     *           "guard_name": "web",
-     *           "created_at": "2025-04-08 12:00:00",
-     *           "updated_at": "2025-04-08 12:00:00"
-     *         }
-     *       ],
-     *       "created_at": "2025-04-08 12:00:00",
-     *       "updated_at": "2025-04-08 12:00:00"
-     *     }
-     *   ],
-     *   "meta": {
-     *     "current_page": 1,
-     *     "from": 1,
-     *     "last_page": 1,
-     *     "per_page": 15,
-     *     "to": 1,
-     *     "total": 1
-     *   }
-     * }
+     * @return AnonymousResourceCollection<LengthAwarePaginator<RoleResource>>
      */
     public function index(): AnonymousResourceCollection
     {
@@ -75,34 +48,7 @@ final class RoleController extends Controller
      * @bodyParam permissions array Liste des IDs des permissions à attribuer
      * @bodyParam permissions.* int ID de la permission
      *
-     * @response 201 {
-     *   "message": "Role created successfully",
-     *   "data": {
-     *     "id": 1,
-     *     "name": "admin",
-     *     "guard_name": "web",
-     *     "permissions": [
-     *       {
-     *         "id": 1,
-     *         "name": "view projects",
-     *         "guard_name": "web",
-     *         "created_at": "2025-04-08 12:00:00",
-     *         "updated_at": "2025-04-08 12:00:00"
-     *       }
-     *     ],
-     *     "created_at": "2025-04-08 12:00:00",
-     *     "updated_at": "2025-04-08 12:00:00"
-     *   }
-     * }
-     *
-     * @response 422 {
-     *   "message": "The given data was invalid.",
-     *   "errors": {
-     *     "name": [
-     *       "Le nom est déjà utilisé."
-     *     ]
-     *   }
-     * }
+     * @response array{status: int, message: string, data: RoleResource}
      */
     public function store(CreateRoleRequest $request): JsonResponse
     {
@@ -120,28 +66,7 @@ final class RoleController extends Controller
      *
      * @urlParam role int required ID du rôle
      *
-     * @response 200 {
-     *   "data": {
-     *     "id": 1,
-     *     "name": "admin",
-     *     "guard_name": "web",
-     *     "permissions": [
-     *       {
-     *         "id": 1,
-     *         "name": "view projects",
-     *         "guard_name": "web",
-     *         "created_at": "2025-04-08 12:00:00",
-     *         "updated_at": "2025-04-08 12:00:00"
-     *       }
-     *     ],
-     *     "created_at": "2025-04-08 12:00:00",
-     *     "updated_at": "2025-04-08 12:00:00"
-     *   }
-     * }
-     *
-     * @response 404 {
-     *   "message": "Role not found"
-     * }
+     * @response array{status: int, message: string, data: RoleResource}
      */
     public function show(Role $role): JsonResponse
     {
@@ -157,38 +82,7 @@ final class RoleController extends Controller
      * @bodyParam permissions array Liste des IDs des permissions à attribuer
      * @bodyParam permissions.* int ID de la permission
      *
-     * @response 200 {
-     *   "message": "Role updated Successfully",
-     *   "data": {
-     *     "id": 1,
-     *     "name": "admin",
-     *     "guard_name": "web",
-     *     "permissions": [
-     *       {
-     *         "id": 1,
-     *         "name": "view projects",
-     *         "guard_name": "web",
-     *         "created_at": "2025-04-08 12:00:00",
-     *         "updated_at": "2025-04-08 12:00:00"
-     *       }
-     *     ],
-     *     "created_at": "2025-04-08 12:00:00",
-     *     "updated_at": "2025-04-08 12:00:00"
-     *   }
-     * }
-     *
-     * @response 422 {
-     *   "message": "The given data was invalid.",
-     *   "errors": {
-     *     "name": [
-     *       "Le nom est déjà utilisé."
-     *     ]
-     *   }
-     * }
-     *
-     * @response 404 {
-     *   "message": "Role not found"
-     * }
+     * @response array{status: int, message: string, data: RoleResource}
      */
     public function update(UpdateRoleRequest $request, Role $role): JsonResponse
     {
@@ -206,13 +100,7 @@ final class RoleController extends Controller
      *
      * @urlParam role int required ID du rôle
      *
-     * @response 200 {
-     *   "message": "Role deleted successfully"
-     * }
-     *
-     * @response 404 {
-     *   "message": "Role not found"
-     * }
+     * @response void
      */
     public function destroy(Role $role): JsonResponse
     {

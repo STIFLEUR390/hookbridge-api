@@ -31,34 +31,7 @@ final class PermissionController extends Controller
      * @queryParam page int Numéro de page
      * @queryParam per_page int Nombre d'éléments par page
      *
-     * @response 200 {
-     *   "data": [
-     *     {
-     *       "id": 1,
-     *       "name": "view projects",
-     *       "guard_name": "web",
-     *       "roles": [
-     *         {
-     *           "id": 1,
-     *           "name": "admin",
-     *           "guard_name": "web",
-     *           "created_at": "2025-04-08 12:00:00",
-     *           "updated_at": "2025-04-08 12:00:00"
-     *         }
-     *       ],
-     *       "created_at": "2025-04-08 12:00:00",
-     *       "updated_at": "2025-04-08 12:00:00"
-     *     }
-     *   ],
-     *   "meta": {
-     *     "current_page": 1,
-     *     "from": 1,
-     *     "last_page": 1,
-     *     "per_page": 15,
-     *     "to": 1,
-     *     "total": 1
-     *   }
-     * }
+     * @return AnonymousResourceCollection<LengthAwarePaginator<PermissionResource>>
      */
     public function index(): AnonymousResourceCollection
     {
@@ -73,26 +46,7 @@ final class PermissionController extends Controller
      * @bodyParam name string required Nom de la permission
      * @bodyParam guard_name string required Nom du guard
      *
-     * @response 201 {
-     *   "message": "Permission created successfully",
-     *   "data": {
-     *     "id": 1,
-     *     "name": "view projects",
-     *     "guard_name": "web",
-     *     "roles": [],
-     *     "created_at": "2025-04-08 12:00:00",
-     *     "updated_at": "2025-04-08 12:00:00"
-     *   }
-     * }
-     *
-     * @response 422 {
-     *   "message": "The given data was invalid.",
-     *   "errors": {
-     *     "name": [
-     *       "Le nom est déjà utilisé."
-     *     ]
-     *   }
-     * }
+     * @response array{status: int, message: string, data: PermissionResource}
      */
     public function store(CreatePermissionRequest $request): JsonResponse
     {
@@ -106,28 +60,7 @@ final class PermissionController extends Controller
      *
      * @urlParam permission int required ID de la permission
      *
-     * @response 200 {
-     *   "data": {
-     *     "id": 1,
-     *     "name": "view projects",
-     *     "guard_name": "web",
-     *     "roles": [
-     *       {
-     *         "id": 1,
-     *         "name": "admin",
-     *         "guard_name": "web",
-     *         "created_at": "2025-04-08 12:00:00",
-     *         "updated_at": "2025-04-08 12:00:00"
-     *       }
-     *     ],
-     *     "created_at": "2025-04-08 12:00:00",
-     *     "updated_at": "2025-04-08 12:00:00"
-     *   }
-     * }
-     *
-     * @response 404 {
-     *   "message": "Permission not found"
-     * }
+     * @response array{status: int, message: string, data: PermissionResource}
      */
     public function show(Permission $permission): JsonResponse
     {
@@ -141,38 +74,7 @@ final class PermissionController extends Controller
      * @bodyParam name string Nom de la permission
      * @bodyParam guard_name string Nom du guard
      *
-     * @response 200 {
-     *   "message": "Permission updated Successfully",
-     *   "data": {
-     *     "id": 1,
-     *     "name": "view projects",
-     *     "guard_name": "web",
-     *     "roles": [
-     *       {
-     *         "id": 1,
-     *         "name": "admin",
-     *         "guard_name": "web",
-     *         "created_at": "2025-04-08 12:00:00",
-     *         "updated_at": "2025-04-08 12:00:00"
-     *       }
-     *     ],
-     *     "created_at": "2025-04-08 12:00:00",
-     *     "updated_at": "2025-04-08 12:00:00"
-     *   }
-     * }
-     *
-     * @response 422 {
-     *   "message": "The given data was invalid.",
-     *   "errors": {
-     *     "name": [
-     *       "Le nom est déjà utilisé."
-     *     ]
-     *   }
-     * }
-     *
-     * @response 404 {
-     *   "message": "Permission not found"
-     * }
+     * @response array{status: int, message: string, data: PermissionResource}
      */
     public function update(UpdatePermissionRequest $request, Permission $permission): JsonResponse
     {
@@ -186,13 +88,7 @@ final class PermissionController extends Controller
      *
      * @urlParam permission int required ID de la permission
      *
-     * @response 200 {
-     *   "message": "Permission deleted successfully"
-     * }
-     *
-     * @response 404 {
-     *   "message": "Permission not found"
-     * }
+     * @response void
      */
     public function destroy(Permission $permission): JsonResponse
     {

@@ -45,17 +45,53 @@ final class RoleAndPermissionSeeder extends Seeder
             'view all delivery attempts',
         ];
 
+        // Créer les permissions pour les rôles et permissions
+        $rolePermissions = [
+            'view roles',
+            'create roles',
+            'edit roles',
+            'delete roles',
+            'view permissions',
+            'create permissions',
+            'edit permissions',
+            'delete permissions',
+        ];
+
+        // Créer les permissions pour le profil
+        $profilePermissions = [
+            'view profile',
+            'edit profile',
+            'change password',
+        ];
+
+        // Créer les permissions pour le dashboard
+        $dashboardPermissions = [
+            'view dashboard stats',
+            'view webhook activity',
+            'view response times',
+        ];
+
         // Créer toutes les permissions
-        foreach ([...$projectPermissions, ...$adminPermissions] as $permission) {
+        foreach ([...$projectPermissions, ...$adminPermissions, ...$rolePermissions, ...$profilePermissions, ...$dashboardPermissions] as $permission) {
             Permission::create(['name' => $permission]);
         }
 
         // Créer le rôle utilisateur et lui attribuer les permissions de base
         $userRole = Role::create(['name' => 'user']);
-        $userRole->givePermissionTo($projectPermissions);
+        $userRole->givePermissionTo([
+            ...$projectPermissions,
+            ...$profilePermissions,
+            'view dashboard stats',
+        ]);
 
         // Créer le rôle admin et lui attribuer toutes les permissions
         $adminRole = Role::create(['name' => 'admin']);
-        $adminRole->givePermissionTo([...$projectPermissions, ...$adminPermissions]);
+        $adminRole->givePermissionTo([
+            ...$projectPermissions,
+            ...$adminPermissions,
+            ...$rolePermissions,
+            ...$profilePermissions,
+            ...$dashboardPermissions,
+        ]);
     }
 }

@@ -7,6 +7,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -30,15 +31,23 @@ final class AuthController extends Controller
 
         // Supprime les tokens existants pour une nouvelle session
         $user->tokens()->delete();
+        $user->load('roles');
 
         // Création du token d'accès en utilisant l'email comme nom
-        $token = $user->createToken($user->email)->plainTextToken;
+        $token = $user->createToken($user->email, ['*'], now()->addDays(30))->plainTextToken;
 
+    /*
         return $this->responseSuccess(__('auth.login_success'), [
             'token' => $token,
-            'user' => $user,
-            'token_type' => 'Bearer',
+            //'user' => $user,
+            //'token_type' => 'Bearer',
         ]);
+        */
+
+        return response()->json([
+            'token' => $token,
+        ], 200);
+
     }
 
     /**
@@ -60,7 +69,7 @@ final class AuthController extends Controller
         $token->delete();
 
         // Création d'un nouveau token en utilisant l'email
-        $newToken = $user->createToken($user->email)->plainTextToken;
+        $newToken = $user->createToken($user->email, now()->addDays(30))->plainTextToken;
 
         return $this->responseSuccess(__('auth.token_refreshed'), [
             'token' => $newToken,
@@ -99,14 +108,18 @@ final class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+        $user->assignRole('user');
 
-        // Création du token d'accès
-        $token = $user->createToken($user->email)->plainTextToken;
+        return $this->responseSuccess(__('auth.register_success'));
+    }
 
-        return $this->responseSuccess(__('auth.register_success'), [
-            'token' => $token,
-            'user' => $user,
-            'token_type' => 'Bearer',
-        ]);
+    /**
+     * Retourne les informations de l'utilisateur connecté.
+     */
+    public function getUser(Request $request)
+    {
+        $user = $request->user()->load('roles');
+        // new UserResource($request->user()
+        return response()->json(new UserResource($user), 200);
     }
 }

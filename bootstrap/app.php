@@ -18,6 +18,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->api(append: [
             App\Http\Middleware\SetLocale::class,
         ]);
+
+        // $middleware->statefulApi();
+
         $middleware->web(append: [
             Spatie\MailPreview\Http\Middleware\AddMailPreviewOverlayToResponse::class,
         ]);
@@ -26,6 +29,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware->validateCsrfTokens(except: [
             'hook/*',
+            'sanctum/csrf-cookie'
         ]);
         $middleware->alias([
             'role' => Spatie\Permission\Middleware\RoleMiddleware::class,

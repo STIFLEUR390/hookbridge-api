@@ -3,13 +3,15 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\V1\DashboardController;
 use App\Http\Controllers\API\V1\HookController;
 use App\Http\Controllers\API\V1\PasswordResetController;
 use App\Http\Controllers\API\V1\PermissionController;
 use App\Http\Controllers\API\V1\ProfileController;
 use App\Http\Controllers\API\V1\RoleController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Resources\UserResource;
+use Illuminate\Http\Request;
 
 // Routes d'authentification
 Route::prefix('auth')->group(function (): void {
@@ -25,7 +27,10 @@ Route::prefix('auth')->group(function (): void {
 
 // Routes protégées
 Route::middleware(['auth:sanctum'])->group(function (): void {
-    Route::get('/user', fn(Request $request) => $request->user());
+    Route::get('/user', function (Request $request) {
+        $user = $request->user()->load('roles', 'permissions');
+        return new UserResource($request->user());
+    })->middleware('auth:sanctum');
 
     // Routes du profil utilisateur
     Route::prefix('profile')->group(function (): void {
@@ -74,5 +79,12 @@ Route::middleware(['auth:sanctum'])->group(function (): void {
     // Routes des tentatives de livraison
     Route::middleware(['permission:view delivery attempts'])->group(function (): void {
         Route::apiResource('/deliveryAttempts', App\Http\Controllers\API\V1\DeliveryAttemptController::class)->only(['index', 'show']);
+    });
+
+    // Routes du dashboard
+    Route::prefix('dashboard')->group(function (): void {
+        Route::get('/stats', [DashboardController::class, 'getGlobalStats']);
+        Route::get('/webhook-activity', [DashboardController::class, 'getWebhookActivity']);
+        Route::get('/response-times', [DashboardController::class, 'getResponseTimes']);
     });
 });
