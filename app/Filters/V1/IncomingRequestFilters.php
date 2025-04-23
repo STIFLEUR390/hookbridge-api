@@ -37,6 +37,7 @@ final class IncomingRequestFilters extends QueryFilters
             'name',
             'allowed_domain',
             'allowed_subdomain',
+            'user_id'
         ],
         'deliveryAttempts' => [
             'status',

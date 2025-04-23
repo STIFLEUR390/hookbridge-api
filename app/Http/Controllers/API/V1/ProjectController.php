@@ -16,6 +16,8 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * Gestion des projets HookBridge
@@ -55,36 +57,22 @@ final class ProjectController extends Controller
      * @queryParam include string Relations à inclure (user,projectTargets,incomingRequests). Example: user,projectTargets
      * @queryParam search string Recherche dans name, allowed_domain, allowed_subdomain, header, uuid, type. Example: api
      *
-     * @response {
-     *   "data": [
-     *     {
-     *       "id": 1,
-     *       "name": "Mon Projet",
-     *       "allowed_domain": "example.com",
-     *       "allowed_subdomain": "api",
-     *       "header": "X-Custom-Header",
-     *       "provider_config": {"key": "value"},
-     *       "uuid": "123e4567-e89b-12d3-a456-426614174000",
-     *       "active": true,
-     *       "type": "webhook",
-     *       "user_id": 1,
-     *       "created_at": "2024-03-14T12:00:00+00:00",
-     *       "updated_at": "2024-03-14T12:00:00+00:00",
-     *       "status": "actif",
-     *       "domain_url": "https://api.example.com"
-     *     }
-     *   ],
-     *   "links": {},
-     *   "meta": {}
-     * }
+     * @return AnonymousResourceCollection<LengthAwarePaginator<ProjectResource>>
      */
     #[QueryParameter('per_page', description: 'Nombre de projets par page', type: 'int', default: 15)]
     #[QueryParameter('search', description: 'Recherche par nom de projet, domaine, sous-domaine, en-tête, UUID ou type', type: 'string')]
     #[QueryParameter('active', description: 'Filtrer par statut actif/inactif', type: 'boolean')]
     #[QueryParameter('type', description: 'Filtrer par type de projet (callback ou webhook)', type: 'string')]
-    public function index(): AnonymousResourceCollection
+    public function index()
     {
-        $projects = $this->service->getAll(request()->all());
+        $user = Auth::user();
+        $filters = request()->all();
+
+        if (!$user->hasRole('admin')) {
+            $filters['user_id'] = $user->id;
+        }
+
+        $projects = $this->service->getAll($filters);
         return ProjectResource::collection($projects);
     }
 

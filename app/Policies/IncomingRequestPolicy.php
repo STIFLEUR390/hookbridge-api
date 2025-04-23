@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\V1\Project;
+use App\Models\V1\IncomingRequest;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-final class ProjectPolicy
+final class IncomingRequestPolicy
 {
     use HandlesAuthorization;
 
@@ -23,9 +23,9 @@ final class ProjectPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Project $project): bool
+    public function view(User $user, IncomingRequest $incomingRequest): bool
     {
-        return $user->hasRole('admin') || $user->id === $project->user_id;
+        return $user->hasRole('admin') || $user->id === $incomingRequest->project->user_id;
     }
 
     /**
@@ -39,23 +39,23 @@ final class ProjectPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Project $project): bool
+    public function update(User $user, IncomingRequest $incomingRequest): bool
     {
-        return $user->hasRole('admin') || $user->id === $project->user_id;
+        return $user->hasRole('admin') || $user->id === $incomingRequest->project->user_id;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Project $project): bool
+    public function delete(User $user, IncomingRequest $incomingRequest): bool
     {
-        return $user->hasRole('admin') || $user->id === $project->user_id;
+        return $user->hasRole('admin') || $user->id === $incomingRequest->project->user_id;
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Project $project): bool
+    public function restore(User $user, IncomingRequest $incomingRequest): bool
     {
         return $user->hasRole('admin');
     }
@@ -63,7 +63,7 @@ final class ProjectPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Project $project): bool
+    public function forceDelete(User $user, IncomingRequest $incomingRequest): bool
     {
         return $user->hasRole('admin');
     }

@@ -20,6 +20,7 @@ final class ProjectTargetResource extends JsonResource
         return [
             'id' => $this->id,
             'project_id' => $this->project_id,
+            'secret' => $this->secret,
             'url' => $this->url,
             'requires_authentication' => $this->requires_authentication,
             'active' => $this->active,

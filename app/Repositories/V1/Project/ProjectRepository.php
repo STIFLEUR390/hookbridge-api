@@ -6,15 +6,22 @@ namespace App\Repositories\V1\Project;
 
 use App\Models\V1\Project;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 final class ProjectRepository implements ProjectRepositoryInterface
 {
     public function __construct(protected Project $model) {}
 
-    public function getAll(array $filters = []): LengthAwarePaginator
+    public function getAll(array $filters = []): LengthAwarePaginator|Collection
     {
-        return $this->model
-            ->where('user_id', auth()->id())
+        $query = $this->model->newQuery();
+
+        if (!Auth::user()->hasRole('admin')) {
+            $query->where('user_id', Auth::id());
+        }
+
+        return $query
             ->useFilters()
             ->dynamicPaginate();
     }
