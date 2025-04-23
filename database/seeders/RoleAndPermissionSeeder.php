@@ -27,6 +27,7 @@ final class RoleAndPermissionSeeder extends Seeder
             'delete project targets',
             'view incoming requests',
             'view delivery attempts',
+            'edit incoming requests'
         ];
 
         // Créer les permissions pour l'administration
