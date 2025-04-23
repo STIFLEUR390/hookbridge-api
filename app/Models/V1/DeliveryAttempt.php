@@ -35,7 +35,7 @@ final class DeliveryAttempt extends Model
 
     public function incomingRequest(): BelongsTo
     {
-        return $this->belongsTo(IncomingRequest::class);
+        return $this->belongsTo(IncomingRequest::class, 'incoming_request_id');
     }
 
     public function projectTarget(): BelongsTo

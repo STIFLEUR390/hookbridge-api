@@ -16,8 +16,6 @@ final class IncomingRequestFilters extends QueryFilters
         'project_id',
         'type',
         'http_method',
-        'headers',
-        'payload',
         'status',
         'received_at',
         'created_at',

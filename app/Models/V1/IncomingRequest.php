@@ -54,7 +54,7 @@ final class IncomingRequest extends Model
      */
     public function deliveryAttempts(): HasMany
     {
-        return $this->hasMany(DeliveryAttempt::class);
+        return $this->hasMany(DeliveryAttempt::class, 'incoming_request_id');
     }
 
     /**

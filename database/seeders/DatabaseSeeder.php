@@ -34,6 +34,13 @@ final class DatabaseSeeder extends Seeder
         ]);
         $user->assignRole('user');
 
+        $user2 = User::factory()->create([
+            'name' => 'User',
+            'email' => 'user@gmail.com',
+            'password' => bcrypt('password'),
+        ]);
+        $user2->assignRole('user');
+
         // Création de projets de test
         Project::factory(3)
             ->create([
