@@ -11,6 +11,7 @@ return [
     'alpha'                  => 'Dette felt må kun indeholde bogstaver.',
     'alpha_dash'             => 'Dette felt må kun indeholde bogstaver, tal, bindestreger og understregninger.',
     'alpha_num'              => 'Dette felt må kun indeholde bogstaver og tal.',
+    'any_of'                 => 'This field is invalid.',
     'array'                  => 'Dette felt skal være et array.',
     'ascii'                  => 'Dette felt må kun indeholde enkeltbyte alfanumeriske tegn og symboler.',
     'before'                 => 'Dette skal være en dato før :date.',

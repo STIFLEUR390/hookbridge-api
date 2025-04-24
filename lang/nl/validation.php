@@ -11,6 +11,7 @@ return [
     'alpha'                  => 'Dit veld mag alleen letters bevatten.',
     'alpha_dash'             => 'Dit veld mag alleen letters, nummers, underscores (_) en streepjes (-) bevatten.',
     'alpha_num'              => 'Dit veld mag alleen letters en nummers bevatten.',
+    'any_of'                 => 'This field is invalid.',
     'array'                  => 'Dit veld moet geselecteerde elementen bevatten.',
     'ascii'                  => 'Dit veld mag alleen alfanumerieke tekens en symbolen van één byte bevatten.',
     'before'                 => 'Dit veld moet een datum voor :date zijn.',

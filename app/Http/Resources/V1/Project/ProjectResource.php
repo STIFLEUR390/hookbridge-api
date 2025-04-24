@@ -34,7 +34,7 @@ final class ProjectResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'status' => $this->active ? 'actif' : 'inactif',
-            'url_callback' => $this->type === ProjectType::CALLBACK->value ? route('hook.callback', ['uuid' => $this->uuid]) : route('hook.webhook', ['uuid' => $this->uuid]),
+            'url_callback' => $this->type === 'callback' ? route('hook.callback', ['uuid' => $this->uuid]) : route('hook.webhook', ['uuid' => $this->uuid]),
             'domain_url' => $this->allowed_subdomain ?? "https://{$this->allowed_domain}",
         ];
     }

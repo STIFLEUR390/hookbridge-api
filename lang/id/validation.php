@@ -11,6 +11,7 @@ return [
     'alpha'                  => 'Isian ini hanya boleh berisi huruf.',
     'alpha_dash'             => 'Isian ini hanya boleh berisi huruf, angka, strip, dan garis bawah.',
     'alpha_num'              => 'Isian ini hanya boleh berisi huruf dan angka.',
+    'any_of'                 => 'Bidang ini tidak valid.',
     'array'                  => 'Isian harus berisi sebuah array.',
     'ascii'                  => 'Bidang ini hanya boleh berisi karakter dan simbol alfanumerik byte tunggal.',
     'before'                 => 'Tanggal harus berisi sebelum :date.',

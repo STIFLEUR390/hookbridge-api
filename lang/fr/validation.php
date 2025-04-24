@@ -11,6 +11,7 @@ return [
     'alpha'                  => 'Ce champ doit contenir uniquement des lettres',
     'alpha_dash'             => 'Ce champ doit contenir uniquement des lettres, des chiffres et des tirets.',
     'alpha_num'              => 'Ce champ doit contenir uniquement des chiffres et des lettres.',
+    'any_of'                 => 'This field is invalid.',
     'array'                  => 'Ce champ doit être un tableau.',
     'ascii'                  => 'Ce champ ne doit contenir que des caractères alphanumériques et des symboles codés sur un octet.',
     'before'                 => 'Ce champ doit être une date antérieure au :date.',

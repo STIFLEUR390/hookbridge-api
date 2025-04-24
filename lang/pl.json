@@ -1,6 +1,6 @@
 {
     "(and :count more error)": "(i jeszcze :count błąd)",
-    "(and :count more errors)": "(i jeszcze :count błąd)|(i jeszcze :count błędów)|(i jeszcze :count błędów)",
+    "(and :count more errors)": "(i jeszcze :count błąd)|(i jeszcze :count błędy)|(i jeszcze :count błędów)",
     "A decryption key is required.": "Wymagany jest klucz deszyfrujący.",
     "A Timeout Occurred": "Wystąpił limit czasu",
     "Accept": "Akceptuj",

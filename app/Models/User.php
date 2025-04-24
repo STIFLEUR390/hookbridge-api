@@ -7,6 +7,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\V1\Project;
 use App\Notifications\ResetPasswordNotification;
+use App\Traits\HasProjectIds;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -20,6 +21,7 @@ final class User extends Authenticatable
     use CascadesDeletes;
     use HasApiTokens;/** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
+    use HasProjectIds;
     use HasRoles;
     use Notifiable;
 

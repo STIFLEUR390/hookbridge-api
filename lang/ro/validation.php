@@ -11,6 +11,7 @@ return [
     'alpha'                  => 'Acest câmp poate conține numai litere.',
     'alpha_dash'             => 'Acest câmp poate conține numai litere, numere, liniuțe și sublinieri.',
     'alpha_num'              => 'Acest câmp poate conține numai litere și numere.',
+    'any_of'                 => 'This field is invalid.',
     'array'                  => 'Acest câmp trebuie să fie o matrice.',
     'ascii'                  => 'Acest câmp trebuie să conțină doar caractere și simboluri alfanumerice pe un singur octet.',
     'before'                 => 'Aceasta trebuie să fie o dată înainte de :date.',

@@ -11,6 +11,7 @@ return [
     'alpha'                  => 'Ovo polje mora sadržavati samo slova.',
     'alpha_dash'             => 'Ovo polje mora sadržavati samo slova, brojeve, crtice i podcrtavanja.',
     'alpha_num'              => 'Ovo polje mora sadržavati samo slova i brojeve.',
+    'any_of'                 => 'This field is invalid.',
     'array'                  => 'Ovo polje mora biti niz.',
     'ascii'                  => 'Ovo polje smije sadržavati samo slova, brojeve i simbole veličine jednog bajta.',
     'before'                 => 'Ovo polje mora sadržavati datum prije :date.',

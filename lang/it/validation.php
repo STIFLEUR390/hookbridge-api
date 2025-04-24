@@ -11,6 +11,7 @@ return [
     'alpha'                  => 'Può contenere solo lettere.',
     'alpha_dash'             => 'Può contenere solo lettere, numeri e trattini.',
     'alpha_num'              => 'Può contenere solo lettere e numeri.',
+    'any_of'                 => 'This field is invalid.',
     'array'                  => 'Deve essere un array.',
     'ascii'                  => 'Deve contenere solo caratteri alfanumerici single-byte e simboli.',
     'before'                 => 'Deve essere una data precedente al :date.',

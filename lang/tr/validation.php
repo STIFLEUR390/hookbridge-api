@@ -11,6 +11,7 @@ return [
     'alpha'                  => 'Bu alan yalnızca harf içerebilir.',
     'alpha_dash'             => 'Bu alan yalnızca harfler, sayılar, kısa çizgiler ve alt çizgiler içerebilir.',
     'alpha_num'              => 'Bu alan yalnızca harfler ve sayılar içerebilir.',
+    'any_of'                 => 'This field is invalid.',
     'array'                  => 'Bu alan bir dizi olmalı.',
     'ascii'                  => 'Bu alan yalnızca tek baytlık alfasayısal karakterler ve simgeler içermelidir.',
     'before'                 => 'Bu :date\'den önceki bir tarih olmalı.',

@@ -16,7 +16,6 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Facades\Auth;
 
 /**
  * Gestion des requêtes entrantes
@@ -73,12 +72,8 @@ final class IncomingRequestController extends Controller
     #[QueryParameter('project_id', description: 'ID du projet', type: 'int')]
     public function index(): AnonymousResourceCollection
     {
-        $user = Auth::user();
-        $filters = request()->all();
 
-        if (!$user->hasRole('admin')) {
-            $filters['project.user_id'] = $user->id;
-        }
+        $filters = request()->all();
 
         $incomingRequests = $this->service->getAll($filters);
         return IncomingRequestResource::collection($incomingRequests);

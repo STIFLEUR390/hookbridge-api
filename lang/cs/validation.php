@@ -11,6 +11,7 @@ return [
     'alpha'                  => 'Toto pole může obsahovat pouze písmena.',
     'alpha_dash'             => 'Toto pole může obsahovat pouze písmena, čísla, pomlčky a podtržítka.',
     'alpha_num'              => 'Toto pole může obsahovat pouze písmena a čísla.',
+    'any_of'                 => 'Toto pole je neplatné.',
     'array'                  => 'Toto pole musí být pole.',
     'ascii'                  => 'Toto pole musí obsahovat pouze jednobajtový alfanumerický symbol.',
     'before'                 => 'Toto musí být Datum před :date.',

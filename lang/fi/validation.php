@@ -11,6 +11,7 @@ return [
     'alpha'                  => 'Tämä kenttä voi sisältää vain kirjaimia.',
     'alpha_dash'             => 'Tämä kenttä voi sisältää vain kirjaimia, numeroita, viivoja ja alaviivoja.',
     'alpha_num'              => 'Tämä kenttä voi sisältää vain kirjaimia ja numeroita.',
+    'any_of'                 => 'Tämä kenttä on virheellinen.',
     'array'                  => 'Tämän kentän täytyy olla taulukko.',
     'ascii'                  => 'Tämä kenttä saa sisältää vain yksitavuisia aakkosnumeerisia merkkejä ja symboleja.',
     'before'                 => 'Päivämäärän täytyy olla ennen kuin :date.',

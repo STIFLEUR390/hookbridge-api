@@ -11,6 +11,7 @@ return [
     'alpha'                  => 'Este campo solo puede contener letras.',
     'alpha_dash'             => 'Este campo solo puede contener letras, números, guiones y guiones bajos.',
     'alpha_num'              => 'Este campo solo puede contener letras y números.',
+    'any_of'                 => 'Este campo no es válido.',
     'array'                  => 'Este campo debe ser un array (colección).',
     'ascii'                  => 'Este campo solo debe contener caracteres alfanuméricos y símbolos de un solo byte.',
     'before'                 => 'Debe ser una fecha antes de :date.',

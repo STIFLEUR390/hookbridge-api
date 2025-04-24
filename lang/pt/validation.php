@@ -11,6 +11,7 @@ return [
     'alpha'                  => 'Este campo pode conter apenas letras.',
     'alpha_dash'             => 'Este campo pode conter apenas letras, números, traços e o caractere de sublinhado.',
     'alpha_num'              => 'Este campo pode conter apenas letras e números',
+    'any_of'                 => 'This field is invalid.',
     'array'                  => 'Este campo deve ser uma matriz.',
     'ascii'                  => 'Este campo deve conter apenas caracteres alfanuméricos de byte único e símbolos.',
     'before'                 => 'Esta deve ser uma data anterior a :date.',
